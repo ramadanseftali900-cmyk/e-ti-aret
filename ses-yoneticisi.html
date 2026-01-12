@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎵 Ses Yöneticisi</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(135deg, #0a0a1a, #1a1a3a, #0a0a1a);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #fff;
+  padding: 20px;
+}
+.container { max-width: 1400px; margin: 0 auto; }
+.header {
+  text-align: center;
+  padding: 30px 0;
+  border-bottom: 2px solid rgba(155, 89, 182, 0.3);
+  margin-bottom: 30px;
+}
+.header {
+  text-align: center;
+  padding: 30px 0;
+  border-bottom: 2px solid rgba(155, 89, 182, 0.3);
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 36px;
+  background: linear-gradient(135deg, #9b59b6, #e94560);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #888;
+  font-size: 14px;
+}
+
+/* Ses Kartları - 5 tane yan yana */
+.ses-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.ses-card {
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(155, 89, 182, 0.3);
+  border-radius: 15px;
+  padding: 20px 15px;
+  transition: all 0.3s;
+}
+
+.ses-card:hover {
+  border-color: #9b59b6;
+  box-shadow: 0 5px 30px rgba(155, 89, 182, 0.2);
+}
+
+.ses-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.ses-icon {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.ses-card-header h3 {
+  font-size: 14px;
+  color: #fff;
+}
+
+.ses-card-header span {
+  font-size: 11px;
+  color: #888;
+  display: block;
+}
+
+/* Dosya Seçici */
+.dosya-sec {
+  background: rgba(0,0,0,0.3);
+  border: 2px dashed rgba(155, 89, 182, 0.5);
+  border-radius: 8px;
+  padding: 10px 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 8px;
+}
+
+.dosya-sec:hover {
+  border-color: #9b59b6;
+  background: rgba(155, 89, 182, 0.1);
+}
+
+.dosya-sec input {
+  display: none;
+}
+
+.dosya-sec .icon {
+  font-size: 20px;
+  margin-bottom: 3px;
+}
+
+.dosya-sec .text {
+  color: #888;
+  font-size: 9px;
+}
+
+.dosya-sec .dosya-adi {
+  color: #9b59b6;
+  font-weight: bold;
+  margin-top: 3px;
+  font-size: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Kontroller */
+.kontroller {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 12px 8px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 16px;
+}
+
+.btn-test {
+  background: rgba(155, 89, 182, 0.3);
+  color: #fff;
+  border: 1px solid #9b59b6;
+}
+
+.btn-test:hover {
+  background: rgba(155, 89, 182, 0.5);
+}
+
+.btn-sil {
+  background: rgba(231, 76, 60, 0.3);
+  color: #fff;
+  border: 1px solid #e74c3c;
+}
+
+.btn-sil:hover {
+  background: rgba(231, 76, 60, 0.5);
+}
+
+/* Durum */
+.durum {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 11px;
+}
+
+.durum-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.durum-dot.aktif { background: #2ecc71; }
+.durum-dot.pasif { background: #e74c3c; }
+
+/* Kaydet Butonu */
+.kaydet-section {
+  margin-top: 30px;
+  text-align: center;
+  padding: 30px;
+  background: rgba(155, 89, 182, 0.1);
+  border-radius: 15px;
+  border: 2px solid rgba(155, 89, 182, 0.3);
+}
+
+.btn-kaydet {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: #fff;
+  border: none;
+  padding: 15px 50px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 5px 30px rgba(155, 89, 182, 0.4);
+}
+
+.btn-kaydet:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 40px rgba(155, 89, 182, 0.6);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-weight: bold;
+  box-shadow: 0 5px 30px rgba(46, 204, 113, 0.4);
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Bilgi */
+.bilgi {
+  background: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  font-size: 13px;
+  color: #3498db;
+}
+
+.bilgi strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* ========== MÜZİK LİSTESİ ========== */
+.muzik-section {
+  background: rgba(155, 89, 182, 0.1);
+  border: 2px solid rgba(155, 89, 182, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 30px;
+}
+
+.muzik-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.muzik-header h2 {
+  font-size: 20px;
+  color: #9b59b6;
+}
+
+.btn-yukle {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.btn-yukle:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+}
+
+/* Müzik Listesi - Yatay Kaydırma */
+.muzik-liste-container {
+  position: relative;
+}
+
+.muzik-liste {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px 5px;
+  scroll-behavior: smooth;
+}
+
+.muzik-liste::-webkit-scrollbar {
+  height: 8px;
+}
+
+.muzik-liste::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+.muzik-liste::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border-radius: 10px;
+}
+
+/* Müzik Kartı */
+.muzik-kart {
+  min-width: 180px;
+  max-width: 180px;
+  background: rgba(0,0,0,0.3);
+  border: 2px solid rgba(155, 89, 182, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.muzik-kart:hover {
+  border-color: #9b59b6;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(155, 89, 182, 0.3);
+}
+
+.muzik-kart.aktif {
+  border-color: #2ecc71;
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+}
+
+.muzik-kart-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.muzik-kart-isim {
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.muzik-kart-butonlar {
+  display: flex;
+  gap: 5px;
+}
+
+.btn-mini {
+  flex: 1;
+  padding: 8px 5px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+
+.btn-oynat {
+  background: rgba(46, 204, 113, 0.3);
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+}
+
+.btn-oynat:hover {
+  background: rgba(46, 204, 113, 0.5);
+}
+
+.btn-kaldir {
+  background: rgba(231, 76, 60, 0.3);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.btn-kaldir:hover {
+  background: rgba(231, 76, 60, 0.5);
+}
+
+/* Boş Liste */
+.bos-liste {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.bos-liste .icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+  opacity: 0.5;
+}
+
+/* Müzik Çalar */
+.muzik-calar {
+  background: rgba(0,0,0,0.4);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 15px;
+  display: none;
+}
+
+.muzik-calar.aktif {
+  display: block;
+}
+
+.calar-bilgi {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.calar-icon {
+  font-size: 30px;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.calar-isim {
+  flex: 1;
+  font-size: 14px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calar-kontroller {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-calar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid #9b59b6;
+  background: rgba(155, 89, 182, 0.2);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-calar:hover {
+  background: rgba(155, 89, 182, 0.4);
+  transform: scale(1.1);
+}
+
+.btn-calar.buyuk {
+  width: 55px;
+  height: 55px;
+  font-size: 22px;
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  border: none;
+}
+
+/* SEÇ Butonu - Ses Kartlarında */
+.btn-sec {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: #fff;
+  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-sec:hover {
+  transform: scale(1.02);
+  box-shadow: 0 3px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* Seçim Modu */
+.secim-modu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: #fff;
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  z-index: 1000;
+  display: none;
+  animation: slideDown 0.3s;
+}
+
+.secim-modu.aktif {
+  display: block;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+.secim-modu .btn-iptal {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  margin-left: 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div class="secim-modu" id="secimModu">
+  🎵 Müzik listesinden bir şarkı seç: <span id="secimHedef"></span>
+  <button class="btn-iptal" onclick="secimIptal()">İptal</button>
+</div>
+
+<div class="container">
+  <div class="header">
+    <h1>🎵 Ses Yöneticisi</h1>
+    <p>MP3 dosyalarını yükle, hangi ses nerede çalsın ayarla</p>
+  </div>
+
+  <!-- MÜZİK LİSTESİ -->
+  <div class="muzik-section">
+    <div class="muzik-header">
+      <h2>🎶 Müzik Listem</h2>
+      <button class="btn-yukle" onclick="document.getElementById('muzikYukle').click()">
+        ➕ YÜKLE
+      </button>
+      <input type="file" id="muzikYukle" accept="audio/*" multiple style="display:none" onchange="muzikDosyaYukle(this)">
+    </div>
+    
+    <div class="muzik-liste-container">
+      <div class="muzik-liste" id="muzikListe">
+        <div class="bos-liste" id="bosListe">
+          <div class="icon">🎵</div>
+          <div>Henüz müzik yok. YÜKLE butonuna tıkla!</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Müzik Çalar -->
+    <div class="muzik-calar" id="muzikCalar">
+      <div class="calar-bilgi">
+        <div class="calar-icon">🎵</div>
+        <div class="calar-isim" id="calanSarki">-</div>
+      </div>
+      <div class="calar-kontroller">
+        <button class="btn-calar" onclick="oncekiSarki()">⏮️</button>
+        <button class="btn-calar buyuk" id="oynatDurdur" onclick="oynatDurdur()">▶️</button>
+        <button class="btn-calar" onclick="sonrakiSarki()">⏭️</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ses-grid">
+    <!-- Ekran Sesi -->
+    <div class="ses-card">
+      <div class="ses-card-header">
+        <div class="ses-icon">🖥️</div>
+        <div>
+          <h3>Ekran Sesi</h3>
+          <span>Giriş ekranı açılınca çalar</span>
+        </div>
+      </div>
+      <div class="dosya-sec" onclick="document.getElementById('ekranSes').click()">
+        <input type="file" id="ekranSes" accept="audio/*" onchange="dosyaSec('ekran', this)">
+        <div class="icon">📁</div>
+        <div class="text">MP3 dosyası seçmek için tıkla</div>
+        <div class="dosya-adi" id="ekranDosyaAdi"></div>
+      </div>
+      <div class="kontroller">
+        <button class="btn btn-test" onclick="sesTest('ekran')">▶️</button>
+        <button class="btn btn-sil" onclick="sesDurdur('ekran')">⏹️</button>
+      </div>
+      <button class="btn-sec" onclick="listedenSec('ekran')">🎶 LİSTEDEN SEÇ</button>
+      <div class="durum">
+        <div class="durum-dot pasif" id="ekranDurum"></div>
+        <span id="ekranDurumText">Ses yüklenmedi</span>
+      </div>
+    </div>
+
+    <!-- Sipariş Sesi -->
+    <div class="ses-card">
+      <div class="ses-card-header">
+        <div class="ses-icon">📦</div>
+        <div>
+          <h3>Sipariş Sesi</h3>
+          <span>Yeni sipariş gelince çalar</span>
+        </div>
+      </div>
+      <div class="dosya-sec" onclick="document.getElementById('siparisSes').click()">
+        <input type="file" id="siparisSes" accept="audio/*" onchange="dosyaSec('siparis', this)">
+        <div class="icon">📁</div>
+        <div class="text">MP3 dosyası seçmek için tıkla</div>
+        <div class="dosya-adi" id="siparisDosyaAdi"></div>
+      </div>
+      <div class="kontroller">
+        <button class="btn btn-test" onclick="sesTest('siparis')">▶️</button>
+        <button class="btn btn-sil" onclick="sesDurdur('siparis')">⏹️</button>
+      </div>
+      <button class="btn-sec" onclick="listedenSec('siparis')">🎶 LİSTEDEN SEÇ</button>
+      <div class="durum">
+        <div class="durum-dot pasif" id="siparisDurum"></div>
+        <span id="siparisDurumText">Ses yüklenmedi</span>
+      </div>
+    </div>
+
+    <!-- Bildirim Sesi -->
+    <div class="ses-card">
+      <div class="ses-card-header">
+        <div class="ses-icon">🔔</div>
+        <div>
+          <h3>Bildirim Sesi</h3>
+          <span>Bildirim gelince çalar</span>
+        </div>
+      </div>
+      <div class="dosya-sec" onclick="document.getElementById('bildirimSes').click()">
+        <input type="file" id="bildirimSes" accept="audio/*" onchange="dosyaSec('bildirim', this)">
+        <div class="icon">📁</div>
+        <div class="text">MP3 dosyası seçmek için tıkla</div>
+        <div class="dosya-adi" id="bildirimDosyaAdi"></div>
+      </div>
+      <div class="kontroller">
+        <button class="btn btn-test" onclick="sesTest('bildirim')">▶️</button>
+        <button class="btn btn-sil" onclick="sesDurdur('bildirim')">⏹️</button>
+      </div>
+      <button class="btn-sec" onclick="listedenSec('bildirim')">🎶 LİSTEDEN SEÇ</button>
+      <div class="durum">
+        <div class="durum-dot pasif" id="bildirimDurum"></div>
+        <span id="bildirimDurumText">Ses yüklenmedi</span>
+      </div>
+    </div>
+
+    <!-- Başarı Sesi -->
+    <div class="ses-card">
+      <div class="ses-card-header">
+        <div class="ses-icon">✅</div>
+        <div>
+          <h3>Başarı Sesi</h3>
+          <span>İşlem başarılı olunca çalar</span>
+        </div>
+      </div>
+      <div class="dosya-sec" onclick="document.getElementById('basariSes').click()">
+        <input type="file" id="basariSes" accept="audio/*" onchange="dosyaSec('basari', this)">
+        <div class="icon">📁</div>
+        <div class="text">MP3 dosyası seçmek için tıkla</div>
+        <div class="dosya-adi" id="basariDosyaAdi"></div>
+      </div>
+      <div class="kontroller">
+        <button class="btn btn-test" onclick="sesTest('basari')">▶️</button>
+        <button class="btn btn-sil" onclick="sesDurdur('basari')">⏹️</button>
+      </div>
+      <button class="btn-sec" onclick="listedenSec('basari')">🎶 LİSTEDEN SEÇ</button>
+      <div class="durum">
+        <div class="durum-dot pasif" id="basariDurum"></div>
+        <span id="basariDurumText">Ses yüklenmedi</span>
+      </div>
+    </div>
+
+    <!-- Hata Sesi -->
+    <div class="ses-card">
+      <div class="ses-card-header">
+        <div class="ses-icon">❌</div>
+        <div>
+          <h3>Hata Sesi</h3>
+          <span>Hata olunca çalar</span>
+        </div>
+      </div>
+      <div class="dosya-sec" onclick="document.getElementById('hataSes').click()">
+        <input type="file" id="hataSes" accept="audio/*" onchange="dosyaSec('hata', this)">
+        <div class="icon">📁</div>
+        <div class="text">MP3 dosyası seçmek için tıkla</div>
+        <div class="dosya-adi" id="hataDosyaAdi"></div>
+      </div>
+      <div class="kontroller">
+        <button class="btn btn-test" onclick="sesTest('hata')">▶️</button>
+        <button class="btn btn-sil" onclick="sesDurdur('hata')">⏹️</button>
+      </div>
+      <button class="btn-sec" onclick="listedenSec('hata')">🎶 LİSTEDEN SEÇ</button>
+      <div class="durum">
+        <div class="durum-dot pasif" id="hataDurum"></div>
+        <span id="hataDurumText">Ses yüklenmedi</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="kaydet-section">
+    <button class="btn-kaydet" onclick="tumunuKaydet()">💾 TÜM SESLERİ KAYDET</button>
+    <div class="bilgi">
+      <strong>ℹ️ Bilgi:</strong>
+      Sesler tarayıcının localStorage'ına kaydedilir. Aynı tarayıcıda açtığın tüm sayfalarda çalışır.
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">✓ Kaydedildi!</div>
+
+<script src="site-config.js"></script>
+<script>
+// Site ID'li localStorage key
+function getSesKey(key) {
+    if (typeof getSiteKey === 'function') return getSiteKey(key);
+    if (typeof SITE_ID !== 'undefined') return SITE_ID + '_' + key;
+    return key;
+}
+
+// ========== IndexedDB AYARLARI ==========
+var dbName = getSesKey('ramco_ses_db');
+var dbVersion = 1;
+var sesDB = null;
+
+// IndexedDB aç
+function indexedDBac() {
+  return new Promise(function(resolve, reject) {
+    var request = indexedDB.open(dbName, dbVersion);
+    
+    request.onerror = function() {
+      console.error('IndexedDB açılamadı');
+      reject(request.error);
+    };
+    
+    request.onsuccess = function() {
+      sesDB = request.result;
+      resolve(sesDB);
+    };
+    
+    request.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      // Müzik listesi store
+      if (!db.objectStoreNames.contains('muzikler')) {
+        db.createObjectStore('muzikler', { keyPath: 'id' });
+      }
+      // Atanmış sesler store
+      if (!db.objectStoreNames.contains('sesler')) {
+        db.createObjectStore('sesler', { keyPath: 'tip' });
+      }
+    };
+  });
+}
+
+// Müzik kaydet (IndexedDB)
+function muzikKaydetDB(muzik) {
+  return new Promise(function(resolve, reject) {
+    var transaction = sesDB.transaction(['muzikler'], 'readwrite');
+    var store = transaction.objectStore('muzikler');
+    var request = store.put(muzik);
+    request.onsuccess = function() { resolve(); };
+    request.onerror = function() { reject(request.error); };
+  });
+}
+
+// Tüm müzikleri getir (IndexedDB)
+function muzikleriGetirDB() {
+  return new Promise(function(resolve, reject) {
+    var transaction = sesDB.transaction(['muzikler'], 'readonly');
+    var store = transaction.objectStore('muzikler');
+    var request = store.getAll();
+    request.onsuccess = function() { resolve(request.result || []); };
+    request.onerror = function() { reject(request.error); };
+  });
+}
+
+// Müzik sil (IndexedDB)
+function muzikSilDB(id) {
+  return new Promise(function(resolve, reject) {
+    var transaction = sesDB.transaction(['muzikler'], 'readwrite');
+    var store = transaction.objectStore('muzikler');
+    var request = store.delete(id);
+    request.onsuccess = function() { resolve(); };
+    request.onerror = function() { reject(request.error); };
+  });
+}
+
+// Ses kaydet (IndexedDB)
+function sesKaydetDB(tip, data) {
+  return new Promise(function(resolve, reject) {
+    var transaction = sesDB.transaction(['sesler'], 'readwrite');
+    var store = transaction.objectStore('sesler');
+    var request = store.put({ tip: tip, data: data.data, isim: data.isim });
+    request.onsuccess = function() { resolve(); };
+    request.onerror = function() { reject(request.error); };
+  });
+}
+
+// Tüm sesleri getir (IndexedDB)
+function sesleriGetirDB() {
+  return new Promise(function(resolve, reject) {
+    var transaction = sesDB.transaction(['sesler'], 'readonly');
+    var store = transaction.objectStore('sesler');
+    var request = store.getAll();
+    request.onsuccess = function() { resolve(request.result || []); };
+    request.onerror = function() { reject(request.error); };
+  });
+}
+
+// Ses verileri
+var sesler = {
+  ekran: null,
+  siparis: null,
+  bildirim: null,
+  basari: null,
+  hata: null
+};
+
+var audioObjeler = {};
+
+// Müzik listesi
+var muzikListesi = [];
+var suankiMuzik = null;
+var muzikIndex = -1;
+var oynatiliyor = false;
+
+// Seçim modu
+var secimModu = false;
+var secimHedef = null;
+
+// Ses tipi isimleri
+var sesTipIsimleri = {
+  ekran: 'Ekran Sesi',
+  siparis: 'Sipariş Sesi',
+  bildirim: 'Bildirim Sesi',
+  basari: 'Başarı Sesi',
+  hata: 'Hata Sesi'
+};
+
+// Sayfa yüklenince kayıtlı sesleri ve müzikleri yükle
+window.onload = async function() {
+  try {
+    await indexedDBac();
+    
+    // IndexedDB'den müzikleri yükle
+    muzikListesi = await muzikleriGetirDB();
+    muzikListesiGuncelle();
+    
+    // IndexedDB'den sesleri yükle
+    var kayitliSesler = await sesleriGetirDB();
+    kayitliSesler.forEach(function(ses) {
+      sesler[ses.tip] = { data: ses.data, isim: ses.isim };
+      durumGuncelle(ses.tip, true, ses.isim);
+    });
+    
+    // Eski localStorage verilerini IndexedDB'ye taşı (migration)
+    await eskiVerileriTasi();
+    
+    console.log('Ses yöneticisi hazır! Müzik sayısı:', muzikListesi.length);
+  } catch(e) {
+    console.error('Yükleme hatası:', e);
+    // Fallback: localStorage kullan
+    eskiYontemYukle();
+  }
+};
+
+// Eski localStorage verilerini IndexedDB'ye taşı
+async function eskiVerileriTasi() {
+  // Eski müzik listesi
+  var eskiMuzik = localStorage.getItem(getSesKey('ramco_muzik_listesi'));
+  if (eskiMuzik) {
+    try {
+      var eskiListe = JSON.parse(eskiMuzik);
+      for (var i = 0; i < eskiListe.length; i++) {
+        var mevcutMu = muzikListesi.find(function(m) { return m.id === eskiListe[i].id; });
+        if (!mevcutMu) {
+          await muzikKaydetDB(eskiListe[i]);
+          muzikListesi.push(eskiListe[i]);
+        }
+      }
+      localStorage.removeItem(getSesKey('ramco_muzik_listesi'));
+      muzikListesiGuncelle();
+    } catch(e) {}
+  }
+  
+  // Eski sesler
+  var eskiSesler = localStorage.getItem(getSesKey('ramco_sesler'));
+  if (eskiSesler) {
+    try {
+      var data = JSON.parse(eskiSesler);
+      for (var tip in data) {
+        if (data[tip] && !sesler[tip]) {
+          await sesKaydetDB(tip, data[tip]);
+          sesler[tip] = data[tip];
+          durumGuncelle(tip, true, data[tip].isim);
+        }
+      }
+      localStorage.removeItem(getSesKey('ramco_sesler'));
+    } catch(e) {}
+  }
+}
+
+// Fallback: eski yöntemle yükle
+function eskiYontemYukle() {
+  var kayitli = localStorage.getItem(getSesKey('ramco_sesler'));
+  if (kayitli) {
+    try {
+      var data = JSON.parse(kayitli);
+      Object.keys(data).forEach(function(key) {
+        if (data[key]) {
+          sesler[key] = data[key];
+          durumGuncelle(key, true, data[key].isim);
+        }
+      });
+    } catch(e) {}
+  }
+  
+  var kayitliMuzik = localStorage.getItem(getSesKey('ramco_muzik_listesi'));
+  if (kayitliMuzik) {
+    try {
+      muzikListesi = JSON.parse(kayitliMuzik);
+      muzikListesiGuncelle();
+    } catch(e) {}
+  }
+}
+
+// ========== MÜZİK LİSTESİ FONKSİYONLARI ==========
+
+// Müzik yükle
+function muzikDosyaYukle(input) {
+  console.log('Müzik yükleme başladı');
+  var files = input.files;
+  console.log('Dosya sayısı:', files.length);
+  
+  if (!files.length) {
+    console.log('Dosya seçilmedi');
+    return;
+  }
+  
+  // IndexedDB hazır değilse önce aç
+  if (!sesDB) {
+    indexedDBac().then(function() {
+      muzikDosyaYukleDevam(files);
+    }).catch(function(err) {
+      console.error('IndexedDB açılamadı:', err);
+      toastGoster('❌ Veritabanı hatası! Sayfa yenileniyor...');
+      setTimeout(function() { location.reload(); }, 1500);
+    });
+  } else {
+    muzikDosyaYukleDevam(files);
+  }
+  
+  input.value = '';
+}
+
+function muzikDosyaYukleDevam(files) {
+  var yuklenenSayi = 0;
+  var toplamSayi = files.length;
+  
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
+    console.log('Yükleniyor:', file.name, 'Boyut:', (file.size / 1024 / 1024).toFixed(2) + ' MB');
+    
+    // Dosya boyutu bilgisi
+    console.log('Dosya boyutu:', (file.size / 1024 / 1024).toFixed(2) + ' MB');
+    
+    var reader = new FileReader();
+    reader.onload = (function(fileName) {
+      return function(e) {
+        console.log('Dosya okundu:', fileName);
+        var yeniMuzik = {
+          id: Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+          isim: fileName,
+          data: e.target.result
+        };
+        
+        // Listeye ekle
+        muzikListesi.push(yeniMuzik);
+        muzikListesiGuncelle();
+        
+        // IndexedDB'ye kaydet
+        if (sesDB) {
+          muzikKaydetDB(yeniMuzik).then(function() {
+            console.log('IndexedDB kaydedildi:', fileName);
+          }).catch(function(err) {
+            console.log('IndexedDB hatası:', err);
+          });
+        }
+        
+        yuklenenSayi++;
+        if (yuklenenSayi === toplamSayi) {
+          toastGoster('✓ ' + yuklenenSayi + ' müzik yüklendi!');
+        }
+      };
+    })(file.name);
+    
+    reader.onerror = function(err) {
+      console.log('Dosya okuma hatası:', err);
+      toastGoster('❌ Dosya okunamadı!');
+    };
+    
+    reader.readAsDataURL(file);
+  }
+}
+
+// Müzik listesini güncelle
+function muzikListesiGuncelle() {
+  var container = document.getElementById('muzikListe');
+  var bosListe = document.getElementById('bosListe');
+  
+  if (muzikListesi.length === 0) {
+    container.innerHTML = '<div class="bos-liste" id="bosListe"><div class="icon">🎵</div><div>Henüz müzik yok. YÜKLE butonuna tıkla!</div></div>';
+    document.getElementById('muzikCalar').classList.remove('aktif');
+    return;
+  }
+  
+  var html = '';
+  muzikListesi.forEach(function(muzik, index) {
+    var aktifClass = (muzikIndex === index) ? ' aktif' : '';
+    html += '<div class="muzik-kart' + aktifClass + '" id="muzik_' + muzik.id + '" onclick="muzikSec(\'' + muzik.id + '\')">';
+    html += '<div class="muzik-kart-icon">🎵</div>';
+    html += '<div class="muzik-kart-isim" title="' + muzik.isim + '">' + muzik.isim + '</div>';
+    html += '<div class="muzik-kart-butonlar">';
+    html += '<button class="btn-mini btn-oynat" onclick="event.stopPropagation(); muzikOynat(\'' + muzik.id + '\')">▶️</button>';
+    html += '<button class="btn-mini btn-kaldir" onclick="event.stopPropagation(); muzikKaldir(\'' + muzik.id + '\')">🗑️</button>';
+    html += '</div></div>';
+  });
+  
+  container.innerHTML = html;
+}
+
+// Müzik seç (seçim modunda ise atama yap)
+function muzikSec(id) {
+  if (secimModu && secimHedef) {
+    // Seçim modunda - müziği ses tipine ata
+    var muzik = muzikListesi.find(function(m) { return m.id === id; });
+    if (muzik) {
+      sesler[secimHedef] = {
+        data: muzik.data,
+        isim: muzik.isim
+      };
+      durumGuncelle(secimHedef, true, muzik.isim);
+      toastGoster('✓ ' + muzik.isim + ' → ' + sesTipIsimleri[secimHedef]);
+    }
+    secimIptal();
+  } else {
+    // Normal mod - müziği çal
+    muzikOynat(id);
+  }
+}
+
+// Müzik oynat
+function muzikOynat(id) {
+  var index = muzikListesi.findIndex(function(m) { return m.id === id; });
+  if (index === -1) return;
+  
+  muzikIndex = index;
+  var muzik = muzikListesi[index];
+  
+  // Önceki müziği durdur
+  if (suankiMuzik) {
+    suankiMuzik.pause();
+  }
+  
+  // Yeni müziği başlat
+  suankiMuzik = new Audio(muzik.data);
+  suankiMuzik.volume = 0.5;
+  suankiMuzik.play();
+  oynatiliyor = true;
+  
+  // Çalar UI güncelle
+  document.getElementById('muzikCalar').classList.add('aktif');
+  document.getElementById('calanSarki').textContent = muzik.isim;
+  document.getElementById('oynatDurdur').textContent = '⏸️';
+  
+  // Müzik bitince sonrakine geç
+  suankiMuzik.onended = function() {
+    sonrakiSarki();
+  };
+  
+  // Aktif kartı işaretle
+  muzikListesiGuncelle();
+}
+
+// Oynat/Durdur
+function oynatDurdur() {
+  if (!suankiMuzik) {
+    if (muzikListesi.length > 0) {
+      muzikOynat(muzikListesi[0].id);
+    }
+    return;
+  }
+  
+  if (oynatiliyor) {
+    suankiMuzik.pause();
+    oynatiliyor = false;
+    document.getElementById('oynatDurdur').textContent = '▶️';
+  } else {
+    suankiMuzik.play();
+    oynatiliyor = true;
+    document.getElementById('oynatDurdur').textContent = '⏸️';
+  }
+}
+
+// Önceki şarkı
+function oncekiSarki() {
+  if (muzikListesi.length === 0) return;
+  muzikIndex = (muzikIndex - 1 + muzikListesi.length) % muzikListesi.length;
+  muzikOynat(muzikListesi[muzikIndex].id);
+}
+
+// Sonraki şarkı
+function sonrakiSarki() {
+  if (muzikListesi.length === 0) return;
+  muzikIndex = (muzikIndex + 1) % muzikListesi.length;
+  muzikOynat(muzikListesi[muzikIndex].id);
+}
+
+// Müzik kaldır
+async function muzikKaldir(id) {
+  var index = muzikListesi.findIndex(function(m) { return m.id === id; });
+  if (index === -1) return;
+  
+  // Çalıyorsa durdur
+  if (muzikIndex === index && suankiMuzik) {
+    suankiMuzik.pause();
+    suankiMuzik = null;
+    oynatiliyor = false;
+    document.getElementById('muzikCalar').classList.remove('aktif');
+  }
+  
+  // IndexedDB'den sil
+  try {
+    if (sesDB) {
+      await muzikSilDB(id);
+    }
+  } catch(e) {
+    console.error('Silme hatası:', e);
+  }
+  
+  muzikListesi.splice(index, 1);
+  muzikListesiGuncelle();
+  toastGoster('🗑️ Müzik silindi');
+}
+
+// Müzik listesini kaydet (artık kullanılmıyor ama uyumluluk için)
+function muzikListesiKaydet() {
+  // IndexedDB kullanıldığı için bu fonksiyon artık boş
+  console.log('Müzikler IndexedDB\'de saklanıyor');
+}
+
+// ========== SEÇİM MODU ==========
+
+// Listeden seç butonu
+function listedenSec(tip) {
+  if (muzikListesi.length === 0) {
+    toastGoster('⚠️ Önce müzik listesine şarkı yükle!');
+    return;
+  }
+  
+  secimModu = true;
+  secimHedef = tip;
+  document.getElementById('secimModu').classList.add('aktif');
+  document.getElementById('secimHedef').textContent = sesTipIsimleri[tip];
+  
+  // Müzik listesine scroll
+  document.querySelector('.muzik-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Seçim iptal
+function secimIptal() {
+  secimModu = false;
+  secimHedef = null;
+  document.getElementById('secimModu').classList.remove('aktif');
+}
+
+// ========== MEVCUT FONKSİYONLAR ==========
+
+// Dosya seç
+function dosyaSec(tip, input) {
+  var file = input.files[0];
+  if (!file) return;
+  
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    sesler[tip] = {
+      data: e.target.result,
+      isim: file.name
+    };
+    durumGuncelle(tip, true, file.name);
+    toastGoster('✓ ' + file.name + ' yüklendi!');
+  };
+  reader.readAsDataURL(file);
+}
+
+// Durum güncelle
+function durumGuncelle(tip, aktif, dosyaAdi) {
+  var dot = document.getElementById(tip + 'Durum');
+  var text = document.getElementById(tip + 'DurumText');
+  var dosyaAdiEl = document.getElementById(tip + 'DosyaAdi');
+  
+  if (aktif) {
+    dot.className = 'durum-dot aktif';
+    text.textContent = 'Ses hazır';
+    dosyaAdiEl.textContent = '🎵 ' + dosyaAdi;
+  } else {
+    dot.className = 'durum-dot pasif';
+    text.textContent = 'Ses yüklenmedi';
+    dosyaAdiEl.textContent = '';
+  }
+}
+
+// Ses test
+function sesTest(tip) {
+  if (!sesler[tip]) {
+    toastGoster('⚠️ Önce ses dosyası yükle!');
+    return;
+  }
+  
+  // Önceki sesi durdur
+  if (audioObjeler[tip]) {
+    audioObjeler[tip].pause();
+  }
+  
+  var audio = new Audio(sesler[tip].data);
+  audio.volume = 0.5;
+  audioObjeler[tip] = audio;
+  audio.play();
+  
+  toastGoster('▶️ ' + sesler[tip].isim + ' çalıyor...');
+}
+
+// Ses durdur
+function sesDurdur(tip) {
+  if (audioObjeler[tip]) {
+    audioObjeler[tip].pause();
+    audioObjeler[tip].currentTime = 0;
+    toastGoster('⏹️ Ses durduruldu');
+  }
+}
+
+// Ses sil
+function sesSil(tip) {
+  sesler[tip] = null;
+  document.getElementById(tip + 'Ses').value = '';
+  durumGuncelle(tip, false);
+  toastGoster('🗑️ Ses silindi');
+}
+
+// Tümünü kaydet
+async function tumunuKaydet() {
+  console.log('Kaydediliyor...');
+  console.log('Sesler:', sesler);
+  
+  try {
+    // IndexedDB'ye kaydet
+    if (sesDB) {
+      for (var tip in sesler) {
+        if (sesler[tip] && sesler[tip].data) {
+          await sesKaydetDB(tip, sesler[tip]);
+          console.log(tip + ' kaydedildi:', sesler[tip].isim);
+        }
+      }
+    }
+    
+    // Ayrıca localStorage'a da kaydet (diğer sayfalar için uyumluluk)
+    var kaydedilecek = {};
+    ['ekran', 'siparis', 'bildirim', 'basari', 'hata'].forEach(function(tip) {
+      if (sesler[tip] && sesler[tip].data) {
+        kaydedilecek[tip] = sesler[tip];
+      }
+    });
+    
+    try {
+      localStorage.setItem(getSesKey('ramco_sesler'), JSON.stringify(kaydedilecek));
+    } catch(e) {
+      console.log('localStorage dolu, sadece IndexedDB kullanılıyor');
+    }
+    
+    toastGoster('💾 Tüm sesler kaydedildi!');
+  } catch(err) {
+    console.error('Kaydetme hatası:', err);
+    toastGoster('❌ Kaydetme hatası!');
+  }
+}
+
+// Toast göster
+function toastGoster(mesaj) {
+  var toast = document.getElementById('toast');
+  toast.textContent = mesaj;
+  toast.classList.add('show');
+  setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2000);
+}
+</script>
+
+<!-- 🔔 SİPARİŞ SES SİSTEMİ - Her sayfada çalışır -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="ramco-beyin.js"></script>
+<script src="ramco-widget.js"></script>
+</body>
+</html>

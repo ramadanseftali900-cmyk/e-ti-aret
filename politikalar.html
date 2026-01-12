@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Politikalar Yönetimi</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);min-height:100vh;color:#fff}
+
+/* ÜST BAR - ÜRÜN BUTONLARI */
+.topBar{background:rgba(0,0,0,0.6);border-bottom:2px solid #6f42c1;padding:15px 20px;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.topBarTitle{text-align:center;font-size:24px;font-weight:900;margin-bottom:15px;color:#fff;text-shadow:0 0 20px rgba(111,66,193,0.5)}
+.topBarTitle span{color:#6f42c1}
+.urunButtons{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.urunBtn{background:rgba(111,66,193,0.3);color:#fff;border:2px solid #6f42c1;padding:12px 20px;border-radius:10px;cursor:pointer;font-weight:bold;font-size:14px;transition:all 0.3s ease;min-width:90px}
+.urunBtn:hover{background:rgba(111,66,193,0.5);transform:translateY(-2px);box-shadow:0 5px 15px rgba(111,66,193,0.4)}
+.urunBtn.aktif{background:linear-gradient(135deg,#6f42c1 0%,#9c27b0 100%);border-color:#9c27b0;box-shadow:0 0 20px rgba(111,66,193,0.6)}
+
+/* ANA LAYOUT */
+.mainContainer{display:flex;min-height:calc(100vh - 120px);padding:20px;gap:20px}
+
+/* SOL MENÜ - POLİTİKALAR */
+.solMenu{width:280px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px;flex-shrink:0;height:fit-content;position:sticky;top:140px}
+.solMenuTitle{font-size:16px;font-weight:bold;color:#6f42c1;margin-bottom:20px;padding-bottom:10px;border-bottom:2px solid #6f42c1;display:flex;align-items:center;gap:10px}
+.politikaBtn{width:100%;background:rgba(255,255,255,0.05);border:1px solid #444;padding:15px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;color:#fff;text-align:left;margin-bottom:10px;transition:all 0.3s ease;display:flex;align-items:center;gap:12px}
+.politikaBtn:hover{background:rgba(111,66,193,0.2);border-color:#6f42c1;transform:translateX(5px)}
+.politikaBtn.aktif{background:linear-gradient(135deg,rgba(111,66,193,0.4) 0%,rgba(156,39,176,0.4) 100%);border-color:#6f42c1;box-shadow:0 0 15px rgba(111,66,193,0.3)}
+.politikaBtn .icon{font-size:20px}
+.politikaBtn .text{flex:1}
+.politikaBtn .badge{background:#28a745;color:#fff;font-size:10px;padding:3px 8px;border-radius:10px}
+.politikaBtn .badge.bos{background:#dc3545}
+
+/* SAĞ İÇERİK ALANI */
+.sagIcerik{flex:1;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:25px;display:flex;flex-direction:column}
+.icerikHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #444}
+.icerikTitle{font-size:20px;font-weight:bold;display:flex;align-items:center;gap:10px}
+.icerikTitle .urunTag{background:linear-gradient(135deg,#6f42c1 0%,#9c27b0 100%);padding:5px 15px;border-radius:20px;font-size:12px}
+.icerikTitle .politikaTag{background:rgba(40,167,69,0.3);border:1px solid #28a745;padding:5px 15px;border-radius:20px;font-size:12px}
+
+/* TEXTAREA */
+.textareaWrapper{flex:1;display:flex;flex-direction:column}
+.textareaLabel{font-size:14px;color:#888;margin-bottom:10px}
+.politikaTextarea{width:100%;flex:1;min-height:400px;background:rgba(0,0,0,0.3);border:2px solid #444;border-radius:10px;padding:20px;color:#fff;font-size:15px;line-height:1.8;resize:vertical;font-family:Arial,sans-serif}
+.politikaTextarea:focus{outline:none;border-color:#6f42c1;box-shadow:0 0 15px rgba(111,66,193,0.3)}
+.politikaTextarea::placeholder{color:#666}
+
+/* BUTONLAR */
+.butonlar{display:flex;gap:15px;margin-top:20px;justify-content:flex-end}
+.kaydetBtn{background:linear-gradient(135deg,#28a745 0%,#20c997 100%);color:#fff;border:none;padding:15px 40px;border-radius:10px;cursor:pointer;font-size:16px;font-weight:bold;transition:all 0.3s ease;display:flex;align-items:center;gap:10px}
+.kaydetBtn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(40,167,69,0.4)}
+.silBtn{background:linear-gradient(135deg,#dc3545 0%,#c82333 100%);color:#fff;border:none;padding:15px 30px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;transition:all 0.3s ease}
+.silBtn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(220,53,69,0.4)}
+.geriBtn{background:linear-gradient(135deg,#6c757d 0%,#495057 100%);color:#fff;border:none;padding:15px 30px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;transition:all 0.3s ease;text-decoration:none;display:flex;align-items:center;gap:8px}
+.geriBtn:hover{transform:translateY(-2px);box-shadow:0 5px 20px rgba(108,117,125,0.4)}
+
+/* TOAST MESAJI */
+.toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:linear-gradient(135deg,#28a745 0%,#20c997 100%);color:#fff;padding:20px 40px;border-radius:15px;font-size:18px;font-weight:bold;z-index:9999;opacity:0;transition:all 0.3s ease;box-shadow:0 10px 40px rgba(40,167,69,0.5);display:flex;align-items:center;gap:15px}
+.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.toast.error{background:linear-gradient(135deg,#dc3545 0%,#c82333 100%);box-shadow:0 10px 40px rgba(220,53,69,0.5)}
+
+/* İSTATİSTİK KUTUSU */
+.statsBox{background:rgba(111,66,193,0.1);border:1px solid #6f42c1;border-radius:10px;padding:15px;margin-top:20px;display:flex;gap:30px;flex-wrap:wrap}
+.statItem{text-align:center}
+.statItem .value{font-size:24px;font-weight:bold;color:#6f42c1}
+.statItem .label{font-size:11px;color:#888;margin-top:5px}
+
+/* MOBİL UYUM */
+@media(max-width:900px){
+.mainContainer{flex-direction:column}
+.solMenu{width:100%;position:relative;top:0}
+.urunButtons{gap:5px}
+.urunBtn{padding:10px 12px;font-size:12px;min-width:auto;flex:1}
+}
+@media(max-width:500px){
+.urunBtn{padding:8px 10px;font-size:11px}
+.politikaTextarea{min-height:300px}
+.butonlar{flex-direction:column}
+.kaydetBtn,.silBtn,.geriBtn{width:100%;justify-content:center}
+}
+
+/* EMOJİ BAR */
+.emojiBar{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin-bottom:10px;padding:8px;background:rgba(0,0,0,0.3);border-radius:8px;border:1px solid #444}
+.emojiBtn{height:32px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);border:1px solid #555;border-radius:6px;cursor:pointer;font-size:16px;color:#fff;transition:all 0.2s ease}
+.emojiBtn:hover{background:rgba(111,66,193,0.4);border-color:#6f42c1;transform:scale(1.05)}
+@media(max-width:900px){.emojiBar{grid-template-columns:repeat(10,1fr)}}
+@media(max-width:500px){.emojiBar{grid-template-columns:repeat(5,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- ÜST BAR -->
+<div class="topBar">
+<div class="topBarTitle">📋 <span>POLİTİKALAR</span> YÖNETİMİ</div>
+<div class="urunButtons" id="urunButtons">
+<button class="urunBtn aktif" onclick="urunSec(1)">ÜRÜN 1</button>
+<button class="urunBtn" onclick="urunSec(2)">ÜRÜN 2</button>
+<button class="urunBtn" onclick="urunSec(3)">ÜRÜN 3</button>
+<button class="urunBtn" onclick="urunSec(4)">ÜRÜN 4</button>
+<button class="urunBtn" onclick="urunSec(5)">ÜRÜN 5</button>
+<button class="urunBtn" onclick="urunSec(6)">ÜRÜN 6</button>
+<button class="urunBtn" onclick="urunSec(7)">ÜRÜN 7</button>
+<button class="urunBtn" onclick="urunSec(8)">ÜRÜN 8</button>
+<button class="urunBtn" onclick="urunSec(9)">ÜRÜN 9</button>
+<button class="urunBtn" onclick="urunSec(10)">ÜRÜN 10</button>
+</div>
+</div>
+
+<!-- ANA CONTAINER -->
+<div class="mainContainer">
+
+<!-- SOL MENÜ -->
+<div class="solMenu">
+<div class="solMenuTitle">📑 POLİTİKA TÜRLERİ</div>
+<button class="politikaBtn aktif" onclick="politikaSec('gizlilik')" id="btn_gizlilik">
+<span class="icon">🔒</span>
+<span class="text">Gizlilik Politikası</span>
+<span class="badge bos" id="badge_gizlilik">Boş</span>
+</button>
+<button class="politikaBtn" onclick="politikaSec('onbilgilendirme')" id="btn_onbilgilendirme">
+<span class="icon">📄</span>
+<span class="text">Ön Bilgilendirme</span>
+<span class="badge bos" id="badge_onbilgilendirme">Boş</span>
+</button>
+<button class="politikaBtn" onclick="politikaSec('iade')" id="btn_iade">
+<span class="icon">↩️</span>
+<span class="text">İptal ve İade</span>
+<span class="badge bos" id="badge_iade">Boş</span>
+</button>
+<button class="politikaBtn" onclick="politikaSec('teslimat')" id="btn_teslimat">
+<span class="icon">🚚</span>
+<span class="text">Teslimat Koşulları</span>
+<span class="badge bos" id="badge_teslimat">Boş</span>
+</button>
+<button class="politikaBtn" onclick="politikaSec('iletisim')" id="btn_iletisim">
+<span class="icon">📞</span>
+<span class="text">İletişim Bilgileri</span>
+<span class="badge bos" id="badge_iletisim">Boş</span>
+</button>
+
+<div class="statsBox">
+<div class="statItem">
+<div class="value" id="toplamDolu">0</div>
+<div class="label">Dolu Politika</div>
+</div>
+<div class="statItem">
+<div class="value" id="toplamBos">50</div>
+<div class="label">Boş Politika</div>
+</div>
+</div>
+</div>
+
+<!-- SAĞ İÇERİK -->
+<div class="sagIcerik">
+<div class="icerikHeader">
+<div class="icerikTitle">
+<span class="urunTag" id="secilenUrun">ÜRÜN 1</span>
+<span class="politikaTag" id="secilenPolitika">🔒 Gizlilik Politikası</span>
+</div>
+<a href="ana-sayfa.html" class="geriBtn">← GERİ DÖN</a>
+</div>
+
+<div class="textareaWrapper">
+<div class="textareaLabel">Politika içeriğini aşağıya yazın:</div>
+<div class="emojiBar">
+<span class="emojiBtn" onclick="emojiEkle('●')">●</span>
+<span class="emojiBtn" onclick="emojiEkle('○')">○</span>
+<span class="emojiBtn" onclick="emojiEkle('•')">•</span>
+<span class="emojiBtn" onclick="emojiEkle('■')">■</span>
+<span class="emojiBtn" onclick="emojiEkle('□')">□</span>
+<span class="emojiBtn" onclick="emojiEkle('▪')">▪</span>
+<span class="emojiBtn" onclick="emojiEkle('◆')">◆</span>
+<span class="emojiBtn" onclick="emojiEkle('◇')">◇</span>
+<span class="emojiBtn" onclick="emojiEkle('▸')">▸</span>
+<span class="emojiBtn" onclick="emojiEkle('►')">►</span>
+<span class="emojiBtn" onclick="emojiEkle('★')">★</span>
+<span class="emojiBtn" onclick="emojiEkle('☆')">☆</span>
+<span class="emojiBtn" onclick="emojiEkle('✓')">✓</span>
+<span class="emojiBtn" onclick="emojiEkle('✗')">✗</span>
+<span class="emojiBtn" onclick="emojiEkle('─')">─</span>
+</div>
+<textarea class="politikaTextarea" id="politikaIcerik" placeholder="Politika metnini buraya yazın...
+
+Örnek:
+● Mağazamızda verilen tüm servisler ve ürünler firmamıza aittir.
+● Firmamız, çeşitli amaçlarla kişisel veriler toplayabilir.
+● Toplanan verilerin nasıl korunduğu aşağıda belirtilmiştir.
+
+..."></textarea>
+</div>
+
+<div class="butonlar">
+<button class="silBtn" onclick="politikaSil()">🗑️ SİL</button>
+<button class="kaydetBtn" onclick="politikaKaydet()">💾 KAYDET</button>
+</div>
+</div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="site-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+var secilenUrunNo = 1;
+var secilenPolitikaTip = 'gizlilik';
+var politikalarCache = {}; // Firebase'den çekilen veriler için cache
+
+var politikaBasliklari = {
+    'gizlilik': '🔒 Gizlilik Politikası',
+    'onbilgilendirme': '📄 Ön Bilgilendirme Formu',
+    'iade': '↩️ İptal ve İade Politikası',
+    'teslimat': '🚚 Teslimat Koşulları',
+    'iletisim': '📞 İletişim Bilgileri'
+};
+
+// Sayfa yüklenince
+document.addEventListener('DOMContentLoaded', function() {
+    // Firebase hazır olunca tüm politikaları çek
+    onFirebaseReady(function(db) {
+        tumPolitikalariYukle();
+    });
+    
+    // Firebase yoksa localStorage'dan yükle
+    setTimeout(function() {
+        if (!firebaseHazir) {
+            politikaYukle();
+            badgeleriGuncelle();
+            istatistikleriGuncelle();
+        }
+    }, 1000);
+});
+
+// Emoji ekle (satır başına)
+function emojiEkle(emoji) {
+    var textarea = document.getElementById('politikaIcerik');
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var text = textarea.value;
+    
+    // Cursor pozisyonuna emoji + boşluk ekle
+    var before = text.substring(0, start);
+    var after = text.substring(end);
+    
+    textarea.value = before + emoji + ' ' + after;
+    
+    // Cursor'u emoji'den sonraya taşı
+    var newPos = start + emoji.length + 1;
+    textarea.selectionStart = newPos;
+    textarea.selectionEnd = newPos;
+    textarea.focus();
+}
+
+// Tüm politikaları Firebase'den çek
+function tumPolitikalariYukle() {
+    if (!database) {
+        politikaYukle();
+        badgeleriGuncelle();
+        istatistikleriGuncelle();
+        return;
+    }
+    
+    database.ref('politikalar').once('value').then(function(snapshot) {
+        politikalarCache = snapshot.val() || {};
+        politikaYukle();
+        badgeleriGuncelle();
+        istatistikleriGuncelle();
+    }).catch(function(err) {
+        console.log('Firebase okuma hatası:', err);
+        politikaYukle();
+        badgeleriGuncelle();
+        istatistikleriGuncelle();
+    });
+}
+
+// Ürün seç
+function urunSec(no) {
+    secilenUrunNo = no;
+    
+    var butonlar = document.querySelectorAll('.urunBtn');
+    butonlar.forEach(function(btn, index) {
+        btn.classList.remove('aktif');
+        if(index + 1 === no) btn.classList.add('aktif');
+    });
+    
+    document.getElementById('secilenUrun').textContent = 'ÜRÜN ' + no;
+    politikaYukle();
+    badgeleriGuncelle();
+}
+
+// Politika seç
+function politikaSec(tip) {
+    secilenPolitikaTip = tip;
+    
+    var butonlar = document.querySelectorAll('.politikaBtn');
+    butonlar.forEach(function(btn) {
+        btn.classList.remove('aktif');
+    });
+    document.getElementById('btn_' + tip).classList.add('aktif');
+    document.getElementById('secilenPolitika').textContent = politikaBasliklari[tip];
+    politikaYukle();
+}
+
+// Politika yükle (Firebase öncelikli, yoksa localStorage)
+function politikaYukle() {
+    var firebaseKey = 'urun' + secilenUrunNo + '_' + secilenPolitikaTip;
+    var localKey = getSiteKey('politika_urun' + secilenUrunNo + '_' + secilenPolitikaTip);
+    
+    // Önce cache'den bak
+    if (politikalarCache[firebaseKey]) {
+        document.getElementById('politikaIcerik').value = politikalarCache[firebaseKey];
+        return;
+    }
+    
+    // Sonra localStorage'dan bak
+    var icerik = localStorage.getItem(localKey) || '';
+    document.getElementById('politikaIcerik').value = icerik;
+}
+
+// Politika kaydet (Firebase + localStorage)
+function politikaKaydet() {
+    var icerik = document.getElementById('politikaIcerik').value.trim();
+    var firebaseKey = 'urun' + secilenUrunNo + '_' + secilenPolitikaTip;
+    var localKey = getSiteKey('politika_urun' + secilenUrunNo + '_' + secilenPolitikaTip);
+    
+    // localStorage'a kaydet (yedek)
+    if(icerik) {
+        localStorage.setItem(localKey, icerik);
+    } else {
+        localStorage.removeItem(localKey);
+    }
+    
+    // Firebase'e kaydet
+    if (database) {
+        var updates = {};
+        if (icerik) {
+            updates[firebaseKey] = icerik;
+        } else {
+            updates[firebaseKey] = null;
+        }
+        
+        database.ref('politikalar').update(updates).then(function() {
+            politikalarCache[firebaseKey] = icerik || null;
+            toastGoster('✅ Politika kaydedildi!', false);
+            badgeleriGuncelle();
+            istatistikleriGuncelle();
+        }).catch(function(err) {
+            console.log('Firebase kayıt hatası:', err);
+            toastGoster('⚠️ Yerel kaydedildi, Firebase hatası', true);
+        });
+    } else {
+        toastGoster('✅ Yerel kaydedildi (Firebase bağlı değil)', false);
+        badgeleriGuncelle();
+        istatistikleriGuncelle();
+    }
+}
+
+// Politika sil
+function politikaSil() {
+    if(confirm('Bu politikayı silmek istediğinize emin misiniz?')) {
+        var firebaseKey = 'urun' + secilenUrunNo + '_' + secilenPolitikaTip;
+        var localKey = getSiteKey('politika_urun' + secilenUrunNo + '_' + secilenPolitikaTip);
+        
+        localStorage.removeItem(localKey);
+        document.getElementById('politikaIcerik').value = '';
+        
+        if (database) {
+            database.ref('politikalar/' + firebaseKey).remove().then(function() {
+                delete politikalarCache[firebaseKey];
+                toastGoster('🗑️ Politika silindi!', false);
+                badgeleriGuncelle();
+                istatistikleriGuncelle();
+            }).catch(function(err) {
+                toastGoster('⚠️ Yerel silindi, Firebase hatası', true);
+            });
+        } else {
+            toastGoster('🗑️ Politika silindi!', false);
+            badgeleriGuncelle();
+            istatistikleriGuncelle();
+        }
+    }
+}
+
+// Badge'leri güncelle
+function badgeleriGuncelle() {
+    var tipler = ['gizlilik', 'onbilgilendirme', 'iade', 'teslimat', 'iletisim'];
+    
+    tipler.forEach(function(tip) {
+        var firebaseKey = 'urun' + secilenUrunNo + '_' + tip;
+        var localKey = getSiteKey('politika_urun' + secilenUrunNo + '_' + tip);
+        
+        var icerik = politikalarCache[firebaseKey] || localStorage.getItem(localKey);
+        var badge = document.getElementById('badge_' + tip);
+        
+        if(icerik && icerik.trim()) {
+            badge.textContent = 'Dolu';
+            badge.classList.remove('bos');
+        } else {
+            badge.textContent = 'Boş';
+            badge.classList.add('bos');
+        }
+    });
+}
+
+// İstatistikleri güncelle
+function istatistikleriGuncelle() {
+    var tipler = ['gizlilik', 'onbilgilendirme', 'iade', 'teslimat', 'iletisim'];
+    var dolu = 0;
+    var bos = 0;
+    
+    for(var urun = 1; urun <= 10; urun++) {
+        tipler.forEach(function(tip) {
+            var firebaseKey = 'urun' + urun + '_' + tip;
+            var localKey = getSiteKey('politika_urun' + urun + '_' + tip);
+            var icerik = politikalarCache[firebaseKey] || localStorage.getItem(localKey);
+            
+            if(icerik && icerik.trim()) {
+                dolu++;
+            } else {
+                bos++;
+            }
+        });
+    }
+    
+    document.getElementById('toplamDolu').textContent = dolu;
+    document.getElementById('toplamBos').textContent = bos;
+}
+
+// Toast göster
+function toastGoster(mesaj, hata) {
+    var toast = document.getElementById('toast');
+    toast.textContent = mesaj;
+    toast.className = 'toast' + (hata ? ' error' : '');
+    toast.classList.add('show');
+    
+    setTimeout(function() {
+        toast.classList.remove('show');
+    }, 2000);
+}
+</script>
+
+<!-- 🔔 SİPARİŞ SES SİSTEMİ - Her sayfada çalışır -->
+<script src="site-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="ramco-beyin.js"></script>
+<script src="ramco-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Site</title>
+<link rel="stylesheet" href="uygulamalar/ana-sayfa.css">
+<link rel="stylesheet" href="uygulamalar/ses-paneli.css">
+<style>
+html,body{margin:0;padding:0}
+#topBar{position:fixed;top:-160px;left:0;right:0;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:10px 15px;border-bottom:none;z-index:998;transition:top 0.3s ease}
+#topBar.acik{top:0}
+#drawerButtons{display:grid;grid-template-columns:repeat(13,1fr);gap:5px;width:100%}
+.drawerBtn{color:#fff;border:none;padding:8px 4px;border-radius:8px;font-weight:700;cursor:pointer;font-size:11px;text-align:center;display:flex;align-items:center;justify-content:center;gap:4px;transition:all 0.2s ease;box-shadow:0 3px 10px rgba(0,0,0,0.3);white-space:nowrap;height:40px}
+.drawerBtn:hover{transform:translateY(-2px);box-shadow:0 5px 12px rgba(0,0,0,0.4)}
+.ledIsik{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:8px}
+.ledKapali{background:#555;box-shadow:none}
+.ledAcik{background:#0f0;box-shadow:0 0 10px #0f0}
+#sayfaKontrolBar{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.1);flex-wrap:wrap;justify-content:center}
+.sayfaToggle{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,0.3);padding:6px 12px;border-radius:8px;font-size:11px;color:#fff;font-weight:bold}
+.sayfaToggle span{white-space:nowrap}
+.toggleSwitch{width:40px;height:22px;background:#dc3545;border-radius:11px;position:relative;cursor:pointer;transition:background 0.3s}
+.toggleSwitch.acik{background:#28a745}
+.toggleSwitch::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left 0.3s}
+.toggleSwitch.acik::after{left:20px}
+#okBtn{position:fixed;top:0;right:20px;z-index:999;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;border:none;padding:8px 20px;border-radius:0 0 10px 10px;cursor:pointer;font-size:16px;font-weight:bold;transition:top 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.3)}
+#okBtn.acik{top:125px}
+#okBtn:hover{background:linear-gradient(135deg,#16213e 0%,#1a1a2e 100%)}
+#adminBtn{position:fixed;top:200px;right:0;z-index:999;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;border:none;padding:8px 20px;border-radius:10px 0 0 10px;cursor:pointer;font-size:14px;font-weight:bold;transition:top 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.3)}
+#adminBtn.acik{top:210px}
+#adminBtn:hover{background:linear-gradient(135deg,#16213e 0%,#1a1a2e 100%)}
+#urlBtn{position:fixed;top:160px;right:0;z-index:999;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);color:#fff;border:none;padding:8px 20px;border-radius:10px 0 0 10px;cursor:pointer;font-size:14px;font-weight:bold;box-shadow:0 3px 10px rgba(0,0,0,0.3)}
+#urlBtn:hover{background:linear-gradient(135deg,#16213e 0%,#1a1a2e 100%)}
+#urlDrawer{position:fixed;left:-320px;top:125px;width:300px;height:calc(100vh - 125px);background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);z-index:997;transition:left 0.3s ease;box-shadow:3px 0 15px rgba(0,0,0,0.5);overflow:hidden;display:flex;flex-direction:column}
+#urlDrawer.acik{left:0}
+.urlDrawerHeader{background:rgba(0,0,0,0.3);padding:20px;text-align:center;font-size:18px;font-weight:bold;color:#fff;border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0}
+.urlDrawerContent{padding:15px;overflow-y:auto;flex:1}
+.urlItem{margin-bottom:20px}
+.urlItemTitle{color:#fff;font-weight:bold;font-size:14px;margin-bottom:8px}
+.urlItemBox{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:10px;color:#fff;font-size:12px;word-break:break-all;margin-bottom:8px}
+.urlCopyBtn{background:#28a745;color:#fff;border:none;padding:8px 15px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:bold;width:100%}
+.urlCopyBtn:hover{background:#218838}
+.toastMsg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:#28a745;color:#fff;padding:15px 30px;border-radius:10px;font-size:16px;font-weight:bold;z-index:9999;opacity:0;transition:all 0.3s ease;box-shadow:0 5px 20px rgba(40,167,69,0.4)}
+.toastMsg.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+</style>
+</head>
+<body>
+<div id="topBar">
+<div id="drawerButtons">
+<button class="drawerBtn" style="background:#000" onclick="window.location.href='tiktok-pixel.html'">TikTok Pixel</button>
+<button class="drawerBtn" style="background:#0095F6" onclick="window.location.href='meta-pixel.html'">Meta Pixel</button>
+<button class="drawerBtn" style="background:#9C27B0" onclick="window.location.href='domain-bagla.html'">Domain</button>
+<button class="drawerBtn" style="background:#96bf3d" onclick="window.location.href='shopify-ayarlar.html'">Shopify</button>
+<button class="drawerBtn" style="background:#FFC107;color:#000" onclick="window.location.href='muhasebeci.html'">Muhasebe</button>
+<button class="drawerBtn" style="background:#1B5E20" onclick="window.location.href='gelen-fatura.html'">Gelen Fatura</button>
+<button class="drawerBtn" style="background:#00008B" onclick="window.location.href='fatura-gonder.html'">Fatura Gönder</button>
+<button class="drawerBtn" style="background:#FF8C00" onclick="window.location.href='kargo-gonder.html'">Kargo</button>
+<button class="drawerBtn" style="background:#1B5E20" onclick="window.location.href='siparis-takibi.html'">Siparişler</button>
+<button class="drawerBtn" style="background:#2C3E50" onclick="window.location.href='otomasyon.html'">Otomasyon</button>
+<button class="drawerBtn" style="background:#e94560" onclick="window.location.href='ramco.html'">🤖 AI</button>
+<button class="drawerBtn" style="background:#6f42c1" onclick="window.location.href='politikalar.html'">📋 Politika</button>
+<button class="drawerBtn" style="background:#dc3545" onclick="sifreModalAc()">🔐 Şifre</button>
+</div>
+<!-- SAYFA KONTROL BÖLÜMÜ -->
+<div id="sayfaKontrolBar">
+<div class="sayfaToggle"><span>ÜRÜN 1</span><div class="toggleSwitch acik" id="toggle1" onclick="sayfaToggle(1)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 2</span><div class="toggleSwitch acik" id="toggle2" onclick="sayfaToggle(2)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 3</span><div class="toggleSwitch acik" id="toggle3" onclick="sayfaToggle(3)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 4</span><div class="toggleSwitch acik" id="toggle4" onclick="sayfaToggle(4)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 5</span><div class="toggleSwitch acik" id="toggle5" onclick="sayfaToggle(5)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 6</span><div class="toggleSwitch acik" id="toggle6" onclick="sayfaToggle(6)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 7</span><div class="toggleSwitch acik" id="toggle7" onclick="sayfaToggle(7)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 8</span><div class="toggleSwitch acik" id="toggle8" onclick="sayfaToggle(8)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 9</span><div class="toggleSwitch acik" id="toggle9" onclick="sayfaToggle(9)"></div></div>
+<div class="sayfaToggle"><span>ÜRÜN 10</span><div class="toggleSwitch acik" id="toggle10" onclick="sayfaToggle(10)"></div></div>
+</div>
+</div>
+<button id="okBtn" onclick="cekmeceAcKapa()">↓</button>
+<button id="urlBtn" onclick="urlCekmeceAcKapa()">URL</button>
+<button id="adminBtn" onclick="(function(){ var siteId = localStorage.getItem('__SITE_ID__'); if(!siteId){ var h = window.location.hostname; if(h && h !== 'localhost' && h !== '127.0.0.1' && h !== ''){ siteId = h.replace(/\./g,'_').replace(/[^a-zA-Z0-9_]/g,''); } else { var p = window.location.pathname; if(p && p.length > 1){ var parts = p.split('/').filter(function(x){return x && !x.includes('.');}); if(parts.length > 0) siteId = parts[0].replace(/[^a-zA-Z0-9_]/g,'_').toLowerCase(); } } if(!siteId) siteId = 'default'; localStorage.setItem('__SITE_ID__', siteId); } localStorage.setItem(siteId + '_admin_giris', 'true'); window.location.href='urun-1.html'; })()">ADMIN</button>
+
+<!-- URL SOL ÇEKMECESİ -->
+<div id="urlDrawer">
+<div class="urlDrawerHeader">📋 ÜRÜN URL'LERİ</div>
+<div class="urlDrawerContent">
+<!-- WHATSAPP NUMARASI BÖLÜMÜ -->
+<div style="background:rgba(37,211,102,0.1);border:2px solid #25d366;border-radius:10px;padding:15px;margin-bottom:20px">
+<div style="color:#25d366;font-weight:bold;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:8px">💬 WhatsApp Numarası</div>
+<input type="tel" id="whatsappNumara" placeholder="5XX XXX XX XX" style="width:calc(100% - 22px);padding:10px;border:1px solid #25d366;border-radius:8px;background:rgba(0,0,0,0.3);color:#fff;font-size:14px;margin-bottom:10px;box-sizing:border-box" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+<div style="display:flex;gap:8px">
+<button onclick="whatsappKaydet()" style="flex:1;background:#25d366;color:#fff;border:none;padding:10px;border-radius:5px;cursor:pointer;font-weight:bold;font-size:12px">💾 KAYDET</button>
+<button onclick="whatsappSil()" style="flex:1;background:#dc3545;color:#fff;border:none;padding:10px;border-radius:5px;cursor:pointer;font-weight:bold;font-size:12px">🗑️ SİL</button>
+</div>
+<div id="whatsappDurum" style="margin-top:8px;font-size:11px;color:#888;text-align:center"></div>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 1</div>
+<div class="urlItemBox" id="url1" data-page="urun-1.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url1')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 2</div>
+<div class="urlItemBox" id="url2" data-page="urun-2.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url2')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 3</div>
+<div class="urlItemBox" id="url3" data-page="urun-3.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url3')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 4</div>
+<div class="urlItemBox" id="url4" data-page="urun-4.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url4')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 5</div>
+<div class="urlItemBox" id="url5" data-page="urun-5.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url5')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 6</div>
+<div class="urlItemBox" id="url6" data-page="urun-6.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url6')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 7</div>
+<div class="urlItemBox" id="url7" data-page="urun-7.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url7')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 8</div>
+<div class="urlItemBox" id="url8" data-page="urun-8.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url8')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 9</div>
+<div class="urlItemBox" id="url9" data-page="urun-9.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url9')">KOPYALA</button>
+</div>
+<div class="urlItem">
+<div class="urlItemTitle">ÜRÜN 10</div>
+<div class="urlItemBox" id="url10" data-page="urun-10.html">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('url10')">KOPYALA</button>
+</div>
+<div class="urlItem" style="margin-top:20px;padding-top:20px;border-top:2px solid rgba(233,69,96,0.5)">
+<div class="urlItemTitle" style="color:#e94560">🔐 ADMİN GİRİŞ</div>
+<div class="urlItemBox" id="urlAdmin" data-page="admin.html" style="background:rgba(233,69,96,0.2);border-color:rgba(233,69,96,0.5)">Yükleniyor...</div>
+<button class="urlCopyBtn" onclick="kopyalaUrl('urlAdmin')" style="background:#e94560">KOPYALA</button>
+</div>
+</div>
+</div>
+
+<script>
+// URL'leri otomatik güncelle (sayfa yüklenince)
+function urlGuncelle() {
+    var baseUrl = window.location.origin;
+    var urlBoxes = document.querySelectorAll('.urlItemBox[data-page]');
+    urlBoxes.forEach(function(box) {
+        var page = box.getAttribute('data-page');
+        var fullUrl = baseUrl + '/' + page;
+        // https:// olmadan göster (daha kısa)
+        box.textContent = fullUrl.replace('https://', '').replace('http://', '');
+        box.setAttribute('data-full-url', fullUrl);
+    });
+}
+// Sayfa yüklenince çalıştır
+document.addEventListener('DOMContentLoaded', urlGuncelle);
+setTimeout(urlGuncelle, 100); // Yedek
+
+function cekmeceAcKapa(){
+  var topBar = document.getElementById('topBar');
+  var okBtn = document.getElementById('okBtn');
+  if(topBar.classList.contains('acik')){
+    topBar.classList.remove('acik');
+    okBtn.classList.remove('acik');
+    okBtn.textContent = '↓';
+  } else {
+    topBar.classList.add('acik');
+    okBtn.classList.add('acik');
+    okBtn.textContent = '↑';
+  }
+}
+
+function urlCekmeceAcKapa(){
+  var urlDrawer = document.getElementById('urlDrawer');
+  if(urlDrawer.classList.contains('acik')){
+    urlDrawer.classList.remove('acik');
+  } else {
+    urlDrawer.classList.add('acik');
+  }
+}
+
+function kopyalaUrl(id){
+  var el = document.getElementById(id);
+  var fullUrl = el.getAttribute('data-full-url') || ('https://' + el.textContent);
+  navigator.clipboard.writeText(fullUrl).then(function(){
+    // Toast mesajı göster
+    var toast = document.createElement('div');
+    toast.className = 'toastMsg';
+    toast.innerHTML = '✓ Kopyalandı!';
+    document.body.appendChild(toast);
+    setTimeout(function(){ toast.classList.add('show'); }, 10);
+    setTimeout(function(){
+      toast.classList.remove('show');
+      setTimeout(function(){ toast.remove(); }, 300);
+    }, 1500);
+  });
+}
+
+// Site ID için key oluştur (domain bazlı izolasyon)
+function getAnaSayfaKey(key) {
+  var siteId = localStorage.getItem('__SITE_ID__');
+  if (!siteId) {
+    var hostname = window.location.hostname;
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1' && hostname !== '') {
+      siteId = hostname.replace(/\./g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+    } else {
+      var path = window.location.pathname;
+      if (path && path.length > 1) {
+        var parts = path.split('/').filter(function(p) { return p && !p.includes('.'); });
+        if (parts.length > 0) siteId = parts[0].replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase();
+      }
+    }
+    if (!siteId) siteId = 'default';
+    localStorage.setItem('__SITE_ID__', siteId);
+  }
+  return siteId + '_' + key;
+}
+
+// WhatsApp numara kaydet/sil
+function whatsappKaydet() {
+  var numara = document.getElementById('whatsappNumara').value.trim();
+  if(numara) {
+    // Sadece rakamları al
+    numara = numara.replace(/\D/g, '');
+    // Türkiye kodu ekle
+    if(numara.startsWith('0')) numara = '90' + numara.substring(1);
+    else if(!numara.startsWith('90')) numara = '90' + numara;
+    
+    localStorage.setItem(getAnaSayfaKey('whatsapp_numara'), numara);
+    document.getElementById('whatsappDurum').innerHTML = '✅ Kaydedildi: +' + numara;
+    document.getElementById('whatsappDurum').style.color = '#25d366';
+  } else {
+    document.getElementById('whatsappDurum').innerHTML = '⚠️ Numara girin!';
+    document.getElementById('whatsappDurum').style.color = '#ffc107';
+  }
+}
+
+function whatsappSil() {
+  localStorage.removeItem(getAnaSayfaKey('whatsapp_numara'));
+  document.getElementById('whatsappNumara').value = '';
+  document.getElementById('whatsappDurum').innerHTML = '🗑️ Numara silindi';
+  document.getElementById('whatsappDurum').style.color = '#dc3545';
+}
+
+function whatsappYukle() {
+  var numara = localStorage.getItem(getAnaSayfaKey('whatsapp_numara'));
+  if(numara) {
+    document.getElementById('whatsappNumara').value = numara;
+    document.getElementById('whatsappDurum').innerHTML = '✅ Kayıtlı: +' + numara;
+    document.getElementById('whatsappDurum').style.color = '#25d366';
+  }
+}
+
+function urllerGuncelle() {
+  var domain = window.location.hostname;
+  if(domain === 'localhost' || domain === '127.0.0.1') {
+    domain = 'localhost';
+  }
+  for(var i = 1; i <= 10; i++) {
+    var urlEl = document.getElementById('url' + i);
+    if(urlEl) urlEl.textContent = domain + '/urun-' + i + '.html';
+  }
+  var adminEl = document.getElementById('urlAdmin');
+  if(adminEl) adminEl.textContent = domain + '/admin.html';
+}
+
+window.addEventListener('load', function() {
+  whatsappYukle();
+  urllerGuncelle();
+});
+
+function sayfaToggle(num){
+  var toggle = document.getElementById('toggle' + num);
+  var sayfaDurumu = JSON.parse(localStorage.getItem(getAnaSayfaKey('sayfa_durumlari')) || '{}');
+  
+  if(toggle.classList.contains('acik')){
+    toggle.classList.remove('acik');
+    sayfaDurumu['urun' + num] = false;
+  } else {
+    toggle.classList.add('acik');
+    sayfaDurumu['urun' + num] = true;
+  }
+  localStorage.setItem(getAnaSayfaKey('sayfa_durumlari'), JSON.stringify(sayfaDurumu));
+}
+
+function sayfaDurumlariniYukle(){
+  var sayfaDurumu = JSON.parse(localStorage.getItem(getAnaSayfaKey('sayfa_durumlari')) || '{}');
+  for(var i = 1; i <= 10; i++){
+    var toggle = document.getElementById('toggle' + i);
+    if(toggle){
+      if(sayfaDurumu['urun' + i] === false){
+        toggle.classList.remove('acik');
+      } else {
+        toggle.classList.add('acik');
+      }
+    }
+  }
+}
+window.addEventListener('load', sayfaDurumlariniYukle);
+</script>
+<div id="sifreModalEski" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;justify-content:center;align-items:center">
+<div style="background:#fff;padding:30px;border-radius:10px;text-align:center">
+<h3 style="margin-bottom:15px;color:#000">Admin Girişi</h3>
+<input type="password" id="sifreInputEski" placeholder="Şifre girin" style="padding:10px;font-size:16px;border:1px solid #ccc;border-radius:5px;width:200px" onkeypress="if(event.keyCode==13)sifreGirisEski()">
+<br><br>
+<button onclick="sifreGirisEski()" style="background:#28a745;color:#fff;border:none;padding:10px 30px;border-radius:5px;cursor:pointer;font-size:14px">Giriş</button>
+<button onclick="sifreKapatEski()" style="background:#dc3545;color:#fff;border:none;padding:10px 30px;border-radius:5px;cursor:pointer;font-size:14px;margin-left:10px">İptal</button>
+</div>
+</div>
+<script>
+function sifreGirisEski() {
+  var sifre = document.getElementById('sifreInputEski').value.toLowerCase();
+  var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('admin_sifre') : 'admin_sifre';
+  var adminSifre = localStorage.getItem(siteKey) || 'hayat123';
+  
+  if(sifre === adminSifre.toLowerCase()) {
+    document.getElementById('sifreModalEski').style.display = 'none';
+    var girisKey = (typeof getSiteKey === 'function') ? getSiteKey('admin_giris') : 'admin_giris';
+    localStorage.setItem(girisKey, 'true');
+    location.reload();
+  } else {
+    alert('Şifre yanlış!');
+    document.getElementById('sifreInputEski').value = '';
+  }
+}
+function sifreKapatEski() {
+  document.getElementById('sifreModalEski').style.display = 'none';
+}
+</script>
+
+
+<div id="mainPage">
+<!-- SARAY DASHBOARD -->
+<div style="background:linear-gradient(135deg,#0a0a0a 0%,#1a1a2e 50%,#16213e 100%);min-height:100vh;padding:20px;padding-top:30px;color:#fff;margin:0">
+
+<!-- ÜST BAR - CANLI -->
+<div style="background:rgba(0,0,0,0.5);border:1px solid #28a745;border-radius:15px;padding:15px 25px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px">
+<div style="display:flex;align-items:center;gap:15px">
+<div id="onlineDot" style="width:16px;height:16px;background:#00ff00;border-radius:50%;animation:pulse 1.5s infinite;box-shadow:0 0 15px #00ff00"></div>
+<span style="font-size:16px;font-weight:bold;color:#aaa">CANLI:</span>
+<span id="onlineCount" style="font-size:42px;font-weight:900;color:#00ff00;text-shadow:0 0 20px #00ff00,0 0 40px #00ff00;animation:glowPulse 2s ease-in-out infinite">0</span>
+<span style="font-size:16px;font-weight:bold;color:#aaa">kişi online</span>
+</div>
+<style>
+@keyframes glowPulse {
+  0%, 100% { text-shadow: 0 0 20px #00ff00, 0 0 40px #00ff00; }
+  50% { text-shadow: 0 0 30px #00ff00, 0 0 60px #00ff00, 0 0 80px #00ff00; }
+}
+</style>
+<div style="font-size:14px;color:#888" id="currentDateTime"></div>
+</div>
+
+<!-- ANA KARTLAR -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:25px">
+
+<!-- Bugün Ziyaretçi -->
+<div class="dashCard" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:15px;padding:20px;text-align:center">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">👥 BUGÜN ZİYARETÇİ</div>
+<div id="todayVisitors" style="font-size:42px;font-weight:900">0</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">kişi girdi</div>
+</div>
+
+<!-- Toplam Ziyaretçi -->
+<div class="dashCard" style="background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%);border-radius:15px;padding:20px;text-align:center">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">📊 TOPLAM ZİYARETÇİ</div>
+<div id="totalVisitors" style="font-size:42px;font-weight:900">0</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">tüm zamanlar</div>
+</div>
+
+<!-- Bugün Sipariş -->
+<div class="dashCard" style="background:linear-gradient(135deg,#4facfe 0%,#00f2fe 100%);border-radius:15px;padding:20px;text-align:center">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">🛒 BUGÜN SİPARİŞ</div>
+<div id="todayOrders" style="font-size:42px;font-weight:900">0</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">sipariş geldi</div>
+</div>
+
+<!-- Toplam Sipariş -->
+<div class="dashCard" style="background:linear-gradient(135deg,#43e97b 0%,#38f9d7 100%);border-radius:15px;padding:20px;text-align:center">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">📦 TOPLAM SİPARİŞ</div>
+<div id="totalOrders" style="font-size:42px;font-weight:900">0</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">tüm zamanlar</div>
+</div>
+
+<!-- Bugün Ciro -->
+<div class="dashCard" style="background:linear-gradient(135deg,#fa709a 0%,#fee140 100%);border-radius:15px;padding:20px;text-align:center">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">💰 BUGÜN CİRO</div>
+<div id="todayRevenue" style="font-size:36px;font-weight:900">0₺</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">kazanç</div>
+</div>
+
+<!-- Dönüşüm Oranı -->
+<div class="dashCard" style="background:linear-gradient(135deg,#a8edea 0%,#fed6e3 100%);border-radius:15px;padding:20px;text-align:center;color:#333">
+<div style="font-size:14px;opacity:0.8;margin-bottom:5px">📈 DÖNÜŞÜM ORANI</div>
+<div id="conversionRate" style="font-size:42px;font-weight:900">0%</div>
+<div style="font-size:12px;opacity:0.7;margin-top:5px">ziyaretçi → sipariş</div>
+</div>
+
+</div>
+
+<!-- ORTA KISIM - 2 SÜTUN -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(350px,1fr));gap:20px;margin-bottom:25px">
+
+<!-- SAYFA İSTATİSTİKLERİ -->
+<div style="background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📊</span> SAYFA İSTATİSTİKLERİ
+</div>
+<div id="pageStats">
+</div>
+</div>
+
+<!-- TIKLAMA ANALİZİ -->
+<div style="background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🖱️</span> TIKLAMA ANALİZİ
+</div>
+<div style="display:flex;flex-direction:column;gap:15px">
+<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(40,167,69,0.2);padding:15px;border-radius:10px;border-left:4px solid #28a745">
+<span>🛒 Sipariş Ver Butonu</span>
+<span id="orderBtnClicks" style="font-size:24px;font-weight:bold;color:#28a745">0</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;background:rgba(37,211,102,0.2);padding:15px;border-radius:10px;border-left:4px solid #25d366">
+<span>💬 WhatsApp Tıklaması</span>
+<span id="whatsappClicks" style="font-size:24px;font-weight:bold;color:#25d366">0</span>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- ALT KISIM - 3 SÜTUN -->
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+
+<!-- CİHAZ BİLGİSİ -->
+<div style="background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📱</span> CİHAZ DAĞILIMI
+</div>
+<div style="display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:15px">
+<div style="text-align:center">
+<div style="font-size:40px">📱</div>
+<div id="mobilePercent" style="font-size:28px;font-weight:bold;color:#4facfe">0%</div>
+<div style="font-size:12px;color:#888">Mobil</div>
+</div>
+<div style="text-align:center">
+<div style="font-size:40px">📱</div>
+<div id="tabletPercent" style="font-size:28px;font-weight:bold;color:#43e97b">0%</div>
+<div style="font-size:12px;color:#888">Tablet</div>
+</div>
+<div style="text-align:center">
+<div style="font-size:40px">💻</div>
+<div id="laptopPercent" style="font-size:28px;font-weight:bold;color:#f093fb">0%</div>
+<div style="font-size:12px;color:#888">Laptop</div>
+</div>
+<div style="text-align:center">
+<div style="font-size:40px">🖥️</div>
+<div id="desktopPercent" style="font-size:28px;font-weight:bold;color:#fa709a">0%</div>
+<div style="font-size:12px;color:#888">Masaüstü</div>
+</div>
+</div>
+</div>
+
+<!-- ŞEHİR BAZLI -->
+<div style="background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🗺️</span> ŞEHİRLER
+</div>
+<div id="cityStats" style="max-height:200px;overflow-y:auto">
+</div>
+</div>
+
+<!-- SON AKTİVİTELER -->
+<div style="background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🕐</span> SON AKTİVİTELER
+<div id="liveIndicator" style="width:8px;height:8px;background:#28a745;border-radius:50%;animation:pulse 1s infinite"></div>
+</div>
+<div id="recentActivity" style="max-height:200px;overflow-y:auto;font-size:13px">
+</div>
+</div>
+
+</div>
+
+<!-- SİPARİŞ DURUMU -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📋</span> SİPARİŞ DURUMU
+</div>
+<div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px">
+<div style="text-align:center;background:rgba(255,193,7,0.2);padding:20px 40px;border-radius:10px;border:2px solid #ffc107">
+<div style="font-size:14px;color:#ffc107;margin-bottom:5px">⏳ BEKLEYEN</div>
+<div id="pendingOrders" style="font-size:36px;font-weight:bold;color:#ffc107">0</div>
+</div>
+<div style="text-align:center;background:rgba(40,167,69,0.2);padding:20px 40px;border-radius:10px;border:2px solid #28a745">
+<div style="font-size:14px;color:#28a745;margin-bottom:5px">✅ TAMAMLANAN</div>
+<div id="completedOrders" style="font-size:36px;font-weight:bold;color:#28a745">0</div>
+</div>
+<div style="text-align:center;background:rgba(220,53,69,0.2);padding:20px 40px;border-radius:10px;border:2px solid #dc3545">
+<div style="font-size:14px;color:#dc3545;margin-bottom:5px">❌ İPTAL</div>
+<div id="cancelledOrders" style="font-size:36px;font-weight:bold;color:#dc3545">0</div>
+</div>
+</div>
+</div>
+
+<!-- HAFTALIK SATIŞ GRAFİĞİ -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📊</span> HAFTALIK SATIŞ GRAFİĞİ
+</div>
+<div id="weeklyChart" style="display:flex;align-items:flex-end;justify-content:space-around;height:150px;padding:10px 0">
+</div>
+</div>
+<script>
+// Haftalık satış grafiği - Firebase'den veri çeker
+function haftalikGrafigiBagla() {
+  if(typeof database === 'undefined') {
+    setTimeout(haftalikGrafigiBagla, 500);
+    return;
+  }
+  var gunAdlari = ['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  var bugun = new Date();
+  var bugunIndex = bugun.getDay(); // 0=Pazar
+  if(bugunIndex === 0) bugunIndex = 7; // Pazar'ı 7 yap
+  
+  // Son 7 günün tarihlerini hesapla (Pazartesi'den bugüne)
+  var haftaninGunleri = {};
+  for(var i=0; i<7; i++) {
+    var gun = new Date();
+    var fark = bugunIndex - 1 - i; // Pazartesi'den başla
+    gun.setDate(bugun.getDate() - fark);
+    var tarihStr = gun.getDate().toString().padStart(2,'0') + '.' + (gun.getMonth()+1).toString().padStart(2,'0') + '.' + gun.getFullYear();
+    haftaninGunleri[tarihStr] = i; // tarih -> gün indexi
+  }
+  
+  database.ref('siparisler').on('value', function(snapshot) {
+    var gunlukSatis = [0,0,0,0,0,0,0]; // Pzt-Paz
+    
+    snapshot.forEach(function(child) {
+      var siparis = child.val();
+      if(siparis && siparis.tarih) {
+        var tarih = siparis.tarih;
+        if(haftaninGunleri.hasOwnProperty(tarih)) {
+          gunlukSatis[haftaninGunleri[tarih]]++;
+        }
+      }
+    });
+    
+    // Grafiği çiz
+    var container = document.getElementById('weeklyChart');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    var maxSatis = Math.max.apply(null, gunlukSatis) || 1;
+    
+    for(var i=0; i<7; i++) {
+      var satis = gunlukSatis[i];
+      var yuzde = (satis / maxSatis) * 100;
+      var yukseklik = Math.max(20, yuzde * 1.2); // Min 20px
+      
+      var bugunMu = (i === bugunIndex - 1);
+      var renk = bugunMu ? 'linear-gradient(180deg,#43e97b,#38f9d7)' : 'linear-gradient(180deg,#667eea,#764ba2)';
+      
+      var div = document.createElement('div');
+      div.style.textAlign = 'center';
+      div.innerHTML = '<div style="font-size:10px;color:#4facfe;margin-bottom:3px">'+(satis>0?satis:'')+'</div><div style="width:40px;background:'+renk+';border-radius:5px 5px 0 0;height:'+yukseklik+'px;transition:height 0.3s"></div><div style="font-size:11px;color:'+(bugunMu?'#43e97b':'#888')+';margin-top:5px;font-weight:'+(bugunMu?'bold':'normal')+'">'+gunAdlari[i]+'</div>';
+      container.appendChild(div);
+    }
+  });
+}
+window.addEventListener('load', haftalikGrafigiBagla);
+</script>
+
+<!-- EN ÇOK SATAN ÜRÜNLER -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🏆</span> EN ÇOK SATAN ÜRÜNLER
+</div>
+<div id="topProducts" style="max-height:150px;overflow-y:auto">
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,215,0,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid gold">
+<span>🥇 Ürün 1</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(192,192,192,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid silver">
+<span>🥈 Ürün 2</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(205,127,50,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #cd7f32">
+<span>🥉 Ürün 3</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(138,43,226,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #8a2be2">
+<span>🏅 Ürün 4</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,191,255,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #00bfff">
+<span>🏅 Ürün 5</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(50,205,50,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #32cd32">
+<span>🏅 Ürün 6</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,165,0,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #ffa500">
+<span>🏅 Ürün 7</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,20,147,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #ff1493">
+<span>🏅 Ürün 8</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,206,209,0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid #00ced1">
+<span>🏅 Ürün 9</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(255,99,71,0.1);border-radius:8px;border-left:4px solid #ff6347">
+<span>🏅 Ürün 10</span><span style="color:#43e97b;font-weight:bold">0 adet</span>
+</div>
+</div>
+</div>
+
+<!-- FİNANSAL ÖZET -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>💰</span> FİNANSAL ÖZET
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px">
+<div style="text-align:center;background:rgba(67,233,123,0.1);padding:20px;border-radius:10px;border:1px solid #43e97b">
+<div style="font-size:12px;color:#888;margin-bottom:5px">TOPLAM CİRO</div>
+<div id="totalRevenue" style="font-size:28px;font-weight:bold;color:#43e97b">0₺</div>
+</div>
+<div style="text-align:center;background:rgba(79,172,254,0.1);padding:20px;border-radius:10px;border:1px solid #4facfe">
+<div style="font-size:12px;color:#888;margin-bottom:5px">ORT. SİPARİŞ</div>
+<div id="avgOrder" style="font-size:28px;font-weight:bold;color:#4facfe">0₺</div>
+</div>
+<div style="text-align:center;background:rgba(250,112,154,0.1);padding:20px;border-radius:10px;border:1px solid #fa709a">
+<div style="font-size:12px;color:#888;margin-bottom:5px">TAHMINI KAR</div>
+<div id="estimatedProfit" style="font-size:28px;font-weight:bold;color:#fa709a">0₺</div>
+</div>
+</div>
+</div>
+
+<!-- SON SİPARİŞLER TABLOSU -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📦</span> SON SİPARİŞLER
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead>
+<tr style="background:rgba(255,255,255,0.1)">
+<th style="padding:12px;text-align:left;border-bottom:1px solid #444">Tarih</th>
+<th style="padding:12px;text-align:left;border-bottom:1px solid #444">Müşteri</th>
+<th style="padding:12px;text-align:left;border-bottom:1px solid #444">Ürün</th>
+<th style="padding:12px;text-align:right;border-bottom:1px solid #444">Tutar</th>
+<th style="padding:12px;text-align:center;border-bottom:1px solid #444">Durum</th>
+</tr>
+</thead>
+<tbody id="ordersTable">
+<tr><td colspan="5" style="padding:20px;text-align:center;color:#888">Henüz sipariş yok</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- KARGO DURUMU -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🚚</span> KARGO DURUMU
+</div>
+<div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:15px">
+<div style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:40px">📦</div>
+<div id="cargoWaiting" style="font-size:24px;font-weight:bold;color:#ffc107">0</div>
+<div style="font-size:12px;color:#888">Hazırlanıyor</div>
+</div>
+<div style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:40px">🚛</div>
+<div id="cargoOnWay" style="font-size:24px;font-weight:bold;color:#4facfe">0</div>
+<div style="font-size:12px;color:#888">Yolda</div>
+</div>
+<div style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:40px">✅</div>
+<div id="cargoDelivered" style="font-size:24px;font-weight:bold;color:#43e97b">0</div>
+<div style="font-size:12px;color:#888">Teslim Edildi</div>
+</div>
+<div style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:40px">↩️</div>
+<div id="cargoReturned" style="font-size:24px;font-weight:bold;color:#dc3545">0</div>
+<div style="font-size:12px;color:#888">İade</div>
+</div>
+</div>
+</div>
+
+<!-- BİLDİRİMLER -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px">
+<span>🔔</span> BİLDİRİMLER
+<span id="notifCount" style="background:#dc3545;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px">0</span>
+</div>
+<button onclick="toggleSound()" id="soundBtn" style="background:none;border:1px solid #444;color:#fff;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px">🔊 Ses Açık</button>
+</div>
+<div id="notifications" style="max-height:200px;overflow-y:auto">
+<div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px">
+<span>ℹ️</span><span style="color:#888">Henüz bildirim yok</span>
+</div>
+</div>
+</div>
+
+<!-- HEDEFLER -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🎯</span> GÜNLÜK HEDEF
+</div>
+<div style="margin-bottom:15px">
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<span>Satış Hedefi</span>
+<span id="goalProgress">0 / 10 sipariş</span>
+</div>
+<div style="background:#333;border-radius:10px;height:20px;overflow:hidden">
+<div id="goalBar" style="background:linear-gradient(90deg,#43e97b,#38f9d7);height:100%;width:0%;transition:width 0.5s ease;border-radius:10px"></div>
+</div>
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<span>Ciro Hedefi</span>
+<span id="revenueGoalProgress">0₺ / 10.000₺</span>
+</div>
+<div style="background:#333;border-radius:10px;height:20px;overflow:hidden">
+<div id="revenueGoalBar" style="background:linear-gradient(90deg,#fa709a,#fee140);height:100%;width:0%;transition:width 0.5s ease;border-radius:10px"></div>
+</div>
+</div>
+</div>
+<script>
+// Hedefler - Firebase'e bağlı
+function hedefleriBagla() {
+  if(typeof database === 'undefined') { setTimeout(hedefleriBagla, 500); return; }
+  
+  database.ref('istatistikler').on('value', function(snapshot) {
+    var istat = snapshot.val() || {};
+    var bugunSiparis = istat.bugunSiparis || 0;
+    var bugunCiro = istat.bugunCiro || 0;
+    
+    var siparisHedef = 10;
+    var ciroHedef = 10000;
+    
+    var siparisYuzde = Math.min(100, (bugunSiparis / siparisHedef) * 100);
+    var ciroYuzde = Math.min(100, (bugunCiro / ciroHedef) * 100);
+    
+    var goalProgress = document.getElementById('goalProgress');
+    var goalBar = document.getElementById('goalBar');
+    var revenueGoalProgress = document.getElementById('revenueGoalProgress');
+    var revenueGoalBar = document.getElementById('revenueGoalBar');
+    
+    if(goalProgress) goalProgress.textContent = bugunSiparis + ' / ' + siparisHedef + ' sipariş';
+    if(goalBar) goalBar.style.width = siparisYuzde + '%';
+    if(revenueGoalProgress) revenueGoalProgress.textContent = bugunCiro.toLocaleString('tr-TR') + '₺ / ' + ciroHedef.toLocaleString('tr-TR') + '₺';
+    if(revenueGoalBar) revenueGoalBar.style.width = ciroYuzde + '%';
+  });
+}
+window.addEventListener('load', hedefleriBagla);
+</script>
+
+<!-- PERFORMANS -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📈</span> PERFORMANS
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px">
+<div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:10px">
+<div style="font-size:12px;color:#888;margin-bottom:5px">⚡ Sayfa Hızı</div>
+<div style="font-size:20px;font-weight:bold;color:#43e97b">Hızlı</div>
+<div style="font-size:11px;color:#666">Ort. 1.2s yükleme</div>
+</div>
+<div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:10px">
+<div style="font-size:12px;color:#888;margin-bottom:5px">🟢 Uptime</div>
+<div style="font-size:20px;font-weight:bold;color:#43e97b">99.9%</div>
+<div style="font-size:11px;color:#666">Son 30 gün</div>
+</div>
+<div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:10px">
+<div style="font-size:12px;color:#888;margin-bottom:5px">🔄 Son Güncelleme</div>
+<div id="lastUpdate" style="font-size:14px;font-weight:bold;color:#4facfe">-</div>
+</div>
+<div style="background:rgba(255,255,255,0.05);padding:15px;border-radius:10px">
+<div style="font-size:12px;color:#888;margin-bottom:5px">⚠️ Hata Sayısı</div>
+<div style="font-size:20px;font-weight:bold;color:#43e97b">0</div>
+<div style="font-size:11px;color:#666">Son 24 saat</div>
+</div>
+</div>
+</div>
+<script>
+// Son güncelleme zamanı
+setInterval(function() {
+  var lastUpdateEl = document.getElementById('lastUpdate');
+  if(lastUpdateEl) lastUpdateEl.textContent = new Date().toLocaleTimeString('tr-TR');
+}, 1000);
+</script>
+
+<!-- 3D DÖNEN DÜNYA -->
+<!-- 3D DÜNYA -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px;overflow:visible">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🌍</span> DÜNYA HARİTASI - ZİYARETÇİ KONUMLARI
+</div>
+<div style="display:flex;justify-content:center;align-items:center;position:relative;flex-wrap:wrap;gap:30px;overflow:visible;padding:15px">
+<div id="globeContainer" style="width:800px;height:600px;position:relative;cursor:grab"></div>
+<div style="text-align:left">
+<div style="margin-bottom:15px;padding:15px;background:rgba(255,255,255,0.05);border-radius:8px">
+<div style="color:#dc3545;font-weight:bold;font-size:16px">🇹🇷 Türkiye</div>
+<div style="font-size:32px;font-weight:bold" id="turkeyVisitors">0</div>
+<div style="font-size:12px;color:#888">ziyaretçi</div>
+</div>
+<div style="font-size:12px;color:#888;margin-top:10px">🖱️ Fare ile döndür</div>
+<div style="font-size:11px;color:#666;margin-top:5px">🔄 Otomatik dönüyor</div>
+</div>
+</div>
+</div>
+<!-- Firebase -->
+<script src="site-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<!-- TÜM İSTATİSTİKLER - FIREBASE ENTEGRASYONU -->
+<script>
+// Firebase hazır olunca çalışacak ana fonksiyon
+function anaSayfaFirebaseBaslat() {
+  var simdi = new Date();
+  var bugun = simdi.getDate().toString().padStart(2,'0') + '.' + (simdi.getMonth()+1).toString().padStart(2,'0') + '.' + simdi.getFullYear();
+  
+  // AYLIK SIFIRLAMA - Her ayın 1'inde çalışır
+  function aylikSifirlama() {
+    var simdi = new Date();
+    var gun = simdi.getDate();
+    var ay = simdi.getMonth();
+    var yil = simdi.getFullYear();
+    var sonSifirlamaKey = getAnaSayfaKey('son_aylik_sifirlama');
+    var sonSifirlama = localStorage.getItem(sonSifirlamaKey);
+    var buAyKey = yil + '-' + ay;
+    
+    // Ayın 1'i ve bu ay henüz sıfırlanmadıysa
+    if(gun === 1 && sonSifirlama !== buAyKey) {
+      console.log('🔄 Aylık sıfırlama başlıyor...');
+      
+      // Sıfırlanacak tablolar
+      database.ref('ziyaretciler').remove();
+      database.ref('tiklamalar').remove();
+      database.ref('aktiviteler').remove();
+      database.ref('canliZiyaretciler').remove();
+      
+      // Sıfırlama kaydı
+      localStorage.setItem(sonSifirlamaKey, buAyKey);
+      console.log('✅ Aylık sıfırlama tamamlandı: ' + buAyKey);
+      
+      // Bildirim göster
+      alert('📊 Aylık veriler sıfırlandı!\n\nSıfırlanan: Ziyaretçiler, Tıklamalar, Aktiviteler\nKorunan: Siparişler, Faturalar, Stoklar');
+    }
+  }
+  aylikSifirlama();
+  
+  // Tarih/Saat güncelle
+  function tarihGuncelle() {
+    var now = new Date();
+    var el = document.getElementById('currentDateTime');
+    if(el) el.textContent = now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR');
+  }
+  tarihGuncelle(); setInterval(tarihGuncelle, 1000);
+  
+  // ========== ANLIK İSTATİSTİKLER (YENİ SİSTEM) ==========
+  // İlk yüklemede test verisi oluştur
+  database.ref('istatistikler').once('value', function(snapshot) {
+    if(!snapshot.exists()) {
+      console.log('📊 İstatistik tablosu oluşturuluyor...');
+      database.ref('istatistikler').set({
+        bugunTarih: bugun,
+        bugunSiparis: 0,
+        bugunCiro: 0,
+        bugunZiyaretci: 0,
+        toplamSiparis: 0,
+        toplamCiro: 0,
+        toplamZiyaretci: 0
+      });
+    }
+  });
+  
+  database.ref('istatistikler').on('value', function(snapshot) {
+    var istat = snapshot.val() || {};
+    console.log('📊 Firebase istatistikler:', istat);
+    
+    var kayitliTarih = istat.bugunTarih || '';
+    
+    // Eğer kayıtlı tarih bugün değilse, bugünkü değerler 0
+    var bugunSiparis = 0, bugunCiro = 0, bugunZiyaretci = 0;
+    if(kayitliTarih === bugun) {
+      bugunSiparis = istat.bugunSiparis || 0;
+      bugunCiro = istat.bugunCiro || 0;
+      bugunZiyaretci = istat.bugunZiyaretci || 0;
+    }
+    
+    var toplamSiparis = istat.toplamSiparis || 0;
+    var toplamCiro = istat.toplamCiro || 0;
+    var toplamZiyaretci = istat.toplamZiyaretci || 0;
+    
+    // Kartları güncelle
+    var todayOrdersEl = document.getElementById('todayOrders');
+    var totalOrdersEl = document.getElementById('totalOrders');
+    var todayRevenueEl = document.getElementById('todayRevenue');
+    var totalRevenueEl = document.getElementById('totalRevenue');
+    var todayVisitorsEl = document.getElementById('todayVisitors');
+    var totalVisitorsEl = document.getElementById('totalVisitors');
+    
+    if(todayOrdersEl) todayOrdersEl.textContent = bugunSiparis;
+    if(totalOrdersEl) totalOrdersEl.textContent = toplamSiparis;
+    if(todayRevenueEl) todayRevenueEl.textContent = bugunCiro.toLocaleString('tr-TR') + '₺';
+    if(totalRevenueEl) totalRevenueEl.textContent = toplamCiro.toLocaleString('tr-TR') + '₺';
+    if(todayVisitorsEl) todayVisitorsEl.textContent = bugunZiyaretci;
+    if(totalVisitorsEl) totalVisitorsEl.textContent = Math.max(toplamZiyaretci, bugunZiyaretci);
+    
+    // Dönüşüm oranı
+    var donusumOrani = bugunZiyaretci > 0 ? ((bugunSiparis / bugunZiyaretci) * 100).toFixed(1) : 0;
+    var conversionEl = document.getElementById('conversionRate');
+    if(conversionEl) conversionEl.textContent = donusumOrani + '%';
+    
+    // Ortalama sipariş
+    var ortSiparis = toplamSiparis > 0 ? Math.round(toplamCiro / toplamSiparis) : 0;
+    var avgOrderEl = document.getElementById('avgOrder');
+    if(avgOrderEl) avgOrderEl.textContent = ortSiparis.toLocaleString('tr-TR') + '₺';
+    
+    // ========== SAYFA İSTATİSTİKLERİ (istatistikler tablosundan) ==========
+    var urunZiyaretleri = [];
+    for(var i=1; i<=10; i++) {
+      urunZiyaretleri.push(istat['urun'+i+'Ziyaret'] || 0);
+    }
+    var maxUrunZiyaret = Math.max.apply(null, urunZiyaretleri) || 1;
+    var pageStatsHtml = '';
+    for(var i=1; i<=10; i++) {
+      var ziyaret = urunZiyaretleri[i-1];
+      var yuzde = Math.round((ziyaret/maxUrunZiyaret)*100);
+      pageStatsHtml += '<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Ürün '+i+'</span><span style="color:#4facfe">'+ziyaret+' ziyaret</span></div><div style="background:#333;border-radius:5px;height:8px;overflow:hidden"><div style="background:linear-gradient(90deg,#667eea,#764ba2);height:100%;width:'+yuzde+'%"></div></div></div>';
+    }
+    var pageStatsEl = document.getElementById('pageStats'); if(pageStatsEl) pageStatsEl.innerHTML = pageStatsHtml;
+    // =====================================================================
+    
+    // WhatsApp tıklama sayısı
+    var whatsappTiklama = istat.whatsappTiklama || 0;
+    var whatsappClicksEl = document.getElementById('whatsappClicks');
+    if(whatsappClicksEl) whatsappClicksEl.textContent = whatsappTiklama;
+    
+    // Tahmini kar (%30)
+    var estimatedProfitEl = document.getElementById('estimatedProfit');
+    if(estimatedProfitEl) estimatedProfitEl.textContent = Math.round(toplamCiro * 0.3).toLocaleString('tr-TR') + '₺';
+    
+    console.log('✅ Kartlar güncellendi:', {bugunSiparis, bugunCiro, bugunZiyaretci, toplamSiparis, toplamCiro});
+  });
+  // ======================================================
+  
+  // Canlı ziyaretçileri dinle
+  database.ref('canliZiyaretciler').on('value', function(snapshot) {
+    var now = Date.now(), birDakikaOnce = now - 60000, aktifSayi = 0;
+    snapshot.forEach(function(child) {
+      var data = child.val();
+      if(data && data.timestamp && data.timestamp > birDakikaOnce) aktifSayi++;
+    });
+    var onlineEl = document.getElementById('onlineCount');
+    if(onlineEl) onlineEl.textContent = aktifSayi;
+  });
+  
+  // Eski kayıtları temizle
+  setInterval(function() {
+    var now = Date.now(), besDakikaOnce = now - 300000;
+    database.ref('canliZiyaretciler').once('value', function(snapshot) {
+      snapshot.forEach(function(child) {
+        var data = child.val();
+        if(data && data.timestamp && data.timestamp < besDakikaOnce) database.ref('canliZiyaretciler/' + child.key).remove();
+      });
+    });
+  }, 60000);
+  
+  // ZİYARETÇİ İSTATİSTİKLERİ
+  database.ref('ziyaretciler').on('value', function(snapshot) {
+    var simdiZ = new Date();
+    var bugunZ = simdiZ.getDate().toString().padStart(2,'0') + '.' + (simdiZ.getMonth()+1).toString().padStart(2,'0') + '.' + simdiZ.getFullYear();
+    var bugunZiyaretci = 0, toplamZiyaret = 0, benzersizVisitorIds = {}, sayfaZiyaretleri = {}, sehirler = {};
+    var cihazlar = {mobil:0, tablet:0, laptop:0, masaustu:0};
+    var trafikler = {google:0, instagram:0, tiktok:0, facebook:0, direkt:0, diger:0};
+    for(var i=1; i<=10; i++) sayfaZiyaretleri[i] = 0;
+    
+    snapshot.forEach(function(child) {
+      var data = child.val();
+      if(!data) return;
+      
+      toplamZiyaret++;
+      if(data.visitorId) benzersizVisitorIds[data.visitorId] = true;
+      
+      // Sayfa ziyaretlerini her zaman say (toplam)
+      if(data.sayfa) sayfaZiyaretleri[data.sayfa] = (sayfaZiyaretleri[data.sayfa] || 0) + 1;
+      
+      // Bugünkü ziyaretçiler - tarih karşılaştırması
+      var ziyaretTarih = data.tarih || '';
+      if(ziyaretTarih === bugunZ) {
+        bugunZiyaretci++;
+        if(data.sehir && data.sehir !== '') sehirler[data.sehir] = (sehirler[data.sehir] || 0) + 1;
+        if(data.cihaz) cihazlar[data.cihaz] = (cihazlar[data.cihaz] || 0) + 1;
+        if(data.trafikKaynagi) trafikler[data.trafikKaynagi] = (trafikler[data.trafikKaynagi] || 0) + 1;
+      }
+    });
+    
+    document.getElementById('todayVisitors').textContent = bugunZiyaretci;
+    // Toplam = en az bugünkü kadar olmalı
+    var toplamGosterilecek = Math.max(toplamZiyaret, Object.keys(benzersizVisitorIds).length, bugunZiyaretci);
+    document.getElementById('totalVisitors').textContent = toplamGosterilecek;
+    var turkeyEl = document.getElementById('turkeyVisitors'); if(turkeyEl) turkeyEl.textContent = bugunZiyaretci;
+    
+    // Şehirler
+    var sehirArr = Object.entries(sehirler).sort(function(a,b){return b[1]-a[1]}).slice(0,10);
+    var cityHtml = '';
+    sehirArr.forEach(function(s) { cityHtml += '<div style="display:flex;justify-content:space-between;padding:8px;background:rgba(255,255,255,0.05);border-radius:5px;margin-bottom:5px"><span>📍 '+s[0]+'</span><span style="color:#43e97b;font-weight:bold">'+s[1]+'</span></div>'; });
+    if(cityHtml === '') cityHtml = '<div style="color:#888;text-align:center">Henüz şehir verisi yok</div>';
+    var cityStatsEl = document.getElementById('cityStats'); if(cityStatsEl) cityStatsEl.innerHTML = cityHtml;
+    
+    // Globe'a şehir verilerini gönder
+    if(typeof window.updateCityVisitors === 'function') {
+      window.updateCityVisitors(sehirler);
+    }
+    
+    // Cihaz dağılımı
+    var toplamCihaz = bugunZiyaretci || 1;
+    var mobileEl = document.getElementById('mobilePercent'); if(mobileEl) mobileEl.textContent = Math.round((cihazlar.mobil/toplamCihaz)*100) + '%';
+    var tabletEl = document.getElementById('tabletPercent'); if(tabletEl) tabletEl.textContent = Math.round((cihazlar.tablet/toplamCihaz)*100) + '%';
+    var laptopEl = document.getElementById('laptopPercent'); if(laptopEl) laptopEl.textContent = Math.round((cihazlar.laptop/toplamCihaz)*100) + '%';
+    var desktopEl = document.getElementById('desktopPercent'); if(desktopEl) desktopEl.textContent = Math.round((cihazlar.masaustu/toplamCihaz)*100) + '%';
+    
+    // Trafik kaynakları
+    var toplamTrafik = bugunZiyaretci || 1;
+    var googleP = Math.round((trafikler.google/toplamTrafik)*100);
+    var instaP = Math.round((trafikler.instagram/toplamTrafik)*100);
+    var tiktokP = Math.round((trafikler.tiktok/toplamTrafik)*100);
+    var direktP = Math.round(((trafikler.direkt + (trafikler.diger||0))/toplamTrafik)*100);
+    var gT = document.getElementById('googleTraffic'); if(gT) gT.textContent = googleP + '%';
+    var iT = document.getElementById('instaTraffic'); if(iT) iT.textContent = instaP + '%';
+    var tT = document.getElementById('tiktokTraffic'); if(tT) tT.textContent = tiktokP + '%';
+    var dT = document.getElementById('directTraffic'); if(dT) dT.textContent = direktP + '%';
+    var gB = document.getElementById('googleBar'); if(gB) gB.style.width = googleP + '%';
+    var iB = document.getElementById('instaBar'); if(iB) iB.style.width = instaP + '%';
+    var tB = document.getElementById('tiktokBar'); if(tB) tB.style.width = tiktokP + '%';
+    var dB = document.getElementById('directBar'); if(dB) dB.style.width = direktP + '%';
+    
+    window.bugunZiyaretciSayisi = bugunZiyaretci;
+    hesaplaDonusumOrani(bugunZiyaretci);
+  });
+  
+  // SİPARİŞ İSTATİSTİKLERİ
+  database.ref('siparisler').on('value', function(snapshot) {
+    var bugunSiparis = 0, toplamSiparis = 0, bugunCiro = 0, toplamCiro = 0;
+    var bekleyen = 0, tamamlanan = 0, iptal = 0;
+    var kargoHazirlaniyor = 0, kargoYolda = 0, kargoTeslim = 0, kargoIade = 0;
+    var urunSatislari = {}, haftalikSatislar = [0,0,0,0,0,0,0], sonSiparisler = [];
+    for(var i=1; i<=10; i++) urunSatislari[i] = 0;
+    
+    // Son 7 günün tarihlerini aynı formatta oluştur
+    var son7Gun = [];
+    for(var d=6; d>=0; d--) { 
+      var t = new Date(); 
+      t.setDate(t.getDate() - d); 
+      var gunStr = t.getDate().toString().padStart(2,'0') + '.' + (t.getMonth()+1).toString().padStart(2,'0') + '.' + t.getFullYear();
+      son7Gun.push(gunStr); 
+    }
+    
+    snapshot.forEach(function(child) {
+      var data = child.val(); 
+      if(!data) return;
+      
+      toplamSiparis++;
+      
+      // Tutarı sayıya çevir (299₺ -> 299)
+      var tutarStr = (data.tutar || '0').toString();
+      var tutar = parseInt(tutarStr.replace(/[^0-9]/g, '')) || 0;
+      toplamCiro += tutar;
+      
+      // Durum kontrolü
+      var durum = (data.durum || 'beklemede').toLowerCase();
+      if(durum === 'tamamlandi' || durum === 'tamamlandı' || durum === 'teslim edildi') tamamlanan++; 
+      else if(durum === 'iptal' || durum === 'iade') iptal++; 
+      else bekleyen++;
+      
+      // Kargo durumu
+      var kargoDurum = (data.kargoDurum || data.durum || 'hazirlaniyor').toLowerCase();
+      if(kargoDurum.includes('yolda') || kargoDurum.includes('kargoya verildi')) kargoYolda++; 
+      else if(kargoDurum.includes('teslim')) kargoTeslim++; 
+      else if(kargoDurum.includes('iade')) kargoIade++; 
+      else kargoHazirlaniyor++;
+      
+      // Ürün satışları
+      var forum = parseInt(data.forum) || 1; 
+      urunSatislari[forum] = (urunSatislari[forum] || 0) + 1;
+      
+      // Bugünkü siparişler - tarih karşılaştırması
+      var siparisTarih = data.tarih || '';
+      if(siparisTarih === bugun) { 
+        bugunSiparis++; 
+        bugunCiro += tutar; 
+      }
+      
+      // Haftalık satışlar
+      var siparisIdx = son7Gun.indexOf(siparisTarih); 
+      if(siparisIdx > -1) haftalikSatislar[siparisIdx]++;
+      
+      // Son siparişler listesi
+      sonSiparisler.push({ 
+        tarih: siparisTarih || '-', 
+        musteri: data.musteri || 'Müşteri', 
+        urun: data.urunAdi || ('Ürün ' + forum), 
+        tutar: data.tutar || '0₺', 
+        durum: durum, 
+        timestamp: data.timestamp || 0 
+      });
+    });
+    
+    document.getElementById('todayOrders').textContent = bugunSiparis;
+    document.getElementById('totalOrders').textContent = toplamSiparis;
+    document.getElementById('todayRevenue').textContent = bugunCiro.toLocaleString('tr-TR') + '₺';
+    document.getElementById('pendingOrders').textContent = bekleyen;
+    document.getElementById('completedOrders').textContent = tamamlanan;
+    document.getElementById('cancelledOrders').textContent = iptal;
+    document.getElementById('cargoWaiting').textContent = kargoHazirlaniyor;
+    document.getElementById('cargoOnWay').textContent = kargoYolda;
+    document.getElementById('cargoDelivered').textContent = kargoTeslim;
+    document.getElementById('cargoReturned').textContent = kargoIade;
+    document.getElementById('totalRevenue').textContent = toplamCiro.toLocaleString('tr-TR') + '₺';
+    var ortSiparis = toplamSiparis > 0 ? Math.round(toplamCiro / toplamSiparis) : 0;
+    document.getElementById('avgOrder').textContent = ortSiparis.toLocaleString('tr-TR') + '₺';
+    document.getElementById('estimatedProfit').textContent = Math.round(toplamCiro * 0.3).toLocaleString('tr-TR') + '₺';
+    
+    // Haftalık satış grafiği
+    var maxHaftalik = Math.max.apply(null, haftalikSatislar) || 1;
+    for(var b=1; b<=7; b++) { var barEl = document.getElementById('bar' + b); if(barEl) barEl.style.height = Math.max(10, Math.round((haftalikSatislar[b-1] / maxHaftalik) * 140)) + 'px'; }
+    
+    // En çok satan ürünler
+    var urunArr = Object.entries(urunSatislari).sort(function(a,b){return b[1]-a[1]});
+    var topProductsHtml = '', renkler = ['gold','silver','#cd7f32','#8a2be2','#00bfff','#32cd32','#ffa500','#ff1493','#00ced1','#ff6347'];
+    var madalyalar = ['🥇','🥈','🥉','🏅','🏅','🏅','🏅','🏅','🏅','🏅'];
+    urunArr.forEach(function(u, idx) { topProductsHtml += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba('+hexToRgb(renkler[idx])+',0.1);border-radius:8px;margin-bottom:8px;border-left:4px solid '+renkler[idx]+'"><span>'+madalyalar[idx]+' Ürün '+u[0]+'</span><span style="color:#43e97b;font-weight:bold">'+u[1]+' adet</span></div>'; });
+    document.getElementById('topProducts').innerHTML = topProductsHtml;
+    
+    // Son siparişler tablosu
+    sonSiparisler.sort(function(a,b){return b.timestamp - a.timestamp});
+    var sonSiparisHtml = '';
+    sonSiparisler.slice(0,10).forEach(function(s) {
+      var durumRenk = s.durum === 'tamamlandi' || s.durum === 'tamamlandı' ? '#28a745' : (s.durum === 'iptal' ? '#dc3545' : '#ffc107');
+      var durumText = s.durum === 'tamamlandi' || s.durum === 'tamamlandı' ? '✅' : (s.durum === 'iptal' ? '❌' : '⏳');
+      sonSiparisHtml += '<tr><td style="padding:10px;border-bottom:1px solid #333">'+s.tarih+'</td><td style="padding:10px;border-bottom:1px solid #333">'+s.musteri.substr(0,15)+'</td><td style="padding:10px;border-bottom:1px solid #333">'+s.urun.substr(0,20)+'</td><td style="padding:10px;border-bottom:1px solid #333;text-align:right;color:#43e97b">'+s.tutar+'</td><td style="padding:10px;border-bottom:1px solid #333;text-align:center;color:'+durumRenk+'">'+durumText+'</td></tr>';
+    });
+    if(sonSiparisHtml === '') sonSiparisHtml = '<tr><td colspan="5" style="padding:20px;text-align:center;color:#888">Henüz sipariş yok</td></tr>';
+    document.getElementById('ordersTable').innerHTML = sonSiparisHtml;
+    
+    // Günlük hedef
+    var hedefSiparis = 10, hedefCiro = 10000;
+    document.getElementById('goalProgress').textContent = bugunSiparis + ' / ' + hedefSiparis + ' sipariş';
+    document.getElementById('goalBar').style.width = Math.min(100, Math.round((bugunSiparis / hedefSiparis) * 100)) + '%';
+    document.getElementById('revenueGoalProgress').textContent = bugunCiro.toLocaleString('tr-TR') + '₺ / ' + hedefCiro.toLocaleString('tr-TR') + '₺';
+    document.getElementById('revenueGoalBar').style.width = Math.min(100, Math.round((bugunCiro / hedefCiro) * 100)) + '%';
+    
+    window.bugunSiparisSayisi = bugunSiparis;
+    document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('tr-TR');
+    
+    // Dönüşüm oranını güncelle
+    if(window.bugunZiyaretciSayisi) {
+      hesaplaDonusumOrani(window.bugunZiyaretciSayisi);
+    }
+  });
+  
+  // TIKLAMA ANALİZİ - Sipariş butonu (WhatsApp artık istatistikler tablosundan geliyor)
+  database.ref('tiklamalar').on('value', function(snapshot) {
+    var siparisBtn = 0;
+    snapshot.forEach(function(child) { var data = child.val(); if(data && data.tarih === bugun) { if(data.tip === 'siparis_btn') siparisBtn++; } });
+    document.getElementById('orderBtnClicks').textContent = siparisBtn;
+  });
+  
+  // SON AKTİVİTELER
+  database.ref('aktiviteler').orderByChild('timestamp').limitToLast(20).on('value', function(snapshot) {
+    var aktiviteler = []; snapshot.forEach(function(child) { aktiviteler.push(child.val()); }); aktiviteler.reverse();
+    var html = '';
+    aktiviteler.slice(0,10).forEach(function(a) {
+      var zaman = a.timestamp ? new Date(a.timestamp).toLocaleTimeString('tr-TR') : '';
+      var ikon = a.tip === 'ziyaret' ? '👁️' : (a.tip === 'tiklama' ? '🖱️' : '📌');
+      html += '<div style="padding:8px;background:rgba(255,255,255,0.03);border-radius:5px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center"><span>'+ikon+' '+a.mesaj+'</span><span style="color:#666;font-size:11px">'+zaman+'</span></div>';
+    });
+    if(html === '') html = '<div style="color:#888;text-align:center">Henüz aktivite yok</div>';
+    document.getElementById('recentActivity').innerHTML = html;
+  });
+  
+  // STOK DURUMU
+  database.ref('forumStoklar').on('value', function(snapshot) {
+    var stoklar = snapshot.val() || {}, html = '';
+    for(var i=1; i<=10; i++) {
+      var stok = stoklar['forum' + i] || 0, renk, durum, bg;
+      if(stok <= 0) { renk = '#dc3545'; durum = '❌ Tükendi'; bg = 'rgba(220,53,69,0.1)'; }
+      else if(stok <= 5) { renk = '#ffc107'; durum = '⚠️ Az ('+stok+')'; bg = 'rgba(255,193,7,0.1)'; }
+      else { renk = '#28a745'; durum = '✓ Stokta ('+stok+')'; bg = 'rgba(40,167,69,0.1)'; }
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:'+bg+';border-radius:8px;margin-bottom:8px;border-left:4px solid '+renk+'"><span>Ürün '+i+'</span><span style="color:'+renk+';font-weight:bold">'+durum+'</span></div>';
+    }
+    document.getElementById('stockStatus').innerHTML = html;
+  });
+  
+  // BİLDİRİMLER
+  database.ref('siparisler').orderByChild('timestamp').limitToLast(5).on('value', function(snapshot) {
+    var yeniSiparisler = []; snapshot.forEach(function(child) { var data = child.val(); if(data && data.tarih === bugun) yeniSiparisler.push(data); });
+    var html = '';
+    yeniSiparisler.reverse().forEach(function(s) { html += '<div style="padding:10px;background:rgba(40,167,69,0.1);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border-left:3px solid #28a745"><span>🛒</span><span>Yeni: '+s.musteri+' - '+s.tutar+'</span></div>'; });
+    database.ref('forumStoklar').once('value', function(stokSnap) {
+      var stoklar = stokSnap.val() || {};
+      for(var i=1; i<=10; i++) { var stok = stoklar['forum' + i] || 0; if(stok <= 0) html += '<div style="padding:10px;background:rgba(220,53,69,0.1);border-radius:8px;margin-bottom:8px;display:flex;align-items:center;gap:10px;border-left:3px solid #dc3545"><span>⚠️</span><span>Ürün '+i+' tükendi!</span></div>'; }
+      if(html === '') html = '<div style="padding:10px;background:rgba(255,255,255,0.05);border-radius:8px;display:flex;align-items:center;gap:10px"><span>ℹ️</span><span style="color:#888">Bildirim yok</span></div>';
+      document.getElementById('notifications').innerHTML = html;
+      document.getElementById('notifCount').textContent = yeniSiparisler.length;
+    });
+  });
+  
+  function hesaplaDonusumOrani(ziyaretci) { var siparis = window.bugunSiparisSayisi || 0; var oran = ziyaretci > 0 ? ((siparis / ziyaretci) * 100).toFixed(1) : 0; document.getElementById('conversionRate').textContent = oran + '%'; }
+  function hexToRgb(hex) { if(hex === 'gold') return '255,215,0'; if(hex === 'silver') return '192,192,192'; var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return result ? parseInt(result[1],16)+','+parseInt(result[2],16)+','+parseInt(result[3],16) : '255,255,255'; }
+  window.sesAcik = true;
+  window.toggleSound = function() { window.sesAcik = !window.sesAcik; document.getElementById('soundBtn').textContent = window.sesAcik ? '🔊 Ses Açık' : '🔇 Ses Kapalı'; };
+  
+  // ==================== CANLI ZİYARETÇİ TAKİBİ KAPALI (Admin paneli) ====================
+  // Ana sayfa admin paneli olduğu için ziyaretçi olarak sayılmıyor
+}
+
+// Firebase hazır olunca başlat
+if (typeof onFirebaseReady === 'function') {
+  onFirebaseReady(function(db) {
+    console.log('🚀 Ana sayfa Firebase hazır, başlatılıyor...');
+    anaSayfaFirebaseBaslat();
+  });
+} else {
+  // onFirebaseReady yoksa 500ms bekle ve tekrar dene
+  var firebaseCheckInterval = setInterval(function() {
+    if (typeof database !== 'undefined' && database) {
+      clearInterval(firebaseCheckInterval);
+      console.log('🚀 Ana sayfa Firebase hazır (bekleme ile), başlatılıyor...');
+      anaSayfaFirebaseBaslat();
+    }
+  }, 500);
+  // 10 saniye sonra vazgeç
+  setTimeout(function() { clearInterval(firebaseCheckInterval); }, 10000);
+}
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// 3D GLOBE - Gerçek Dünya Haritası
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        var container = document.getElementById('globeContainer');
+        if (!container) return;
+        
+        try {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+            camera.position.z = 3.5;
+            
+            var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(800, 600);
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+            
+            // Dünya küresi - GERÇEK DÜNYA (Image ile)
+            var geometry = new THREE.SphereGeometry(1, 64, 64);
+            
+            // Önce basit mavi küre göster
+            var material = new THREE.MeshBasicMaterial({ color: 0x1a5276 });
+            var globe = new THREE.Mesh(geometry, material);
+            scene.add(globe);
+            
+            // Sonra gerçek texture yükle
+            var img = new Image();
+            img.crossOrigin = 'Anonymous';
+            img.onload = function() {
+                var texture = new THREE.Texture(img);
+                texture.needsUpdate = true;
+                globe.material = new THREE.MeshBasicMaterial({ map: texture });
+                console.log('✅ Gerçek dünya yüklendi!');
+            };
+            img.onerror = function() {
+                console.log('Texture yüklenemedi, alternatif deneniyor...');
+                var img2 = new Image();
+                img2.crossOrigin = 'Anonymous';
+                img2.onload = function() {
+                    var texture = new THREE.Texture(img2);
+                    texture.needsUpdate = true;
+                    globe.material = new THREE.MeshBasicMaterial({ map: texture });
+                };
+                img2.src = 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg';
+            };
+            img.src = 'https://unpkg.com/three-globe@2.24.13/example/img/earth-blue-marble.jpg';
+            
+            // Atmosfer
+            var atmosGeo = new THREE.SphereGeometry(1.08, 64, 64);
+            var atmosMat = new THREE.MeshBasicMaterial({ color: 0x00aaff, transparent: true, opacity: 0.1, side: THREE.BackSide });
+            scene.add(new THREE.Mesh(atmosGeo, atmosMat));
+            
+            // Yıldızlar
+            var starsGeo = new THREE.BufferGeometry();
+            var starPositions = [];
+            for (var i = 0; i < 1000; i++) {
+                starPositions.push((Math.random() - 0.5) * 80);
+                starPositions.push((Math.random() - 0.5) * 80);
+                starPositions.push((Math.random() - 0.5) * 80);
+            }
+            starsGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+            var stars = new THREE.Points(starsGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 }));
+            scene.add(stars);
+            
+            // Şehir koordinatları
+            var sehirKoordinatlari = {
+                'İstanbul': { lat: 41.01, lon: 28.95 },
+                'Ankara': { lat: 39.93, lon: 32.86 },
+                'İzmir': { lat: 38.42, lon: 27.13 },
+                'Bursa': { lat: 40.19, lon: 29.06 },
+                'Antalya': { lat: 36.90, lon: 30.70 },
+                'Adana': { lat: 37.00, lon: 35.32 },
+                'Konya': { lat: 37.87, lon: 32.48 },
+                'Gaziantep': { lat: 37.06, lon: 37.38 },
+                'Mersin': { lat: 36.80, lon: 34.64 },
+                'Diyarbakır': { lat: 37.91, lon: 40.24 },
+                'Kayseri': { lat: 38.73, lon: 35.48 },
+                'Samsun': { lat: 41.29, lon: 36.33 },
+                'Trabzon': { lat: 41.00, lon: 39.72 },
+                'Erzurum': { lat: 39.90, lon: 41.27 }
+            };
+            
+            function latLonToVector3(lat, lon, radius) {
+                var phi = (90 - lat) * (Math.PI / 180);
+                var theta = (lon + 180) * (Math.PI / 180);
+                return new THREE.Vector3(
+                    -radius * Math.sin(phi) * Math.cos(theta),
+                    radius * Math.cos(phi),
+                    radius * Math.sin(phi) * Math.sin(theta)
+                );
+            }
+            
+            var cityPoints = new THREE.Group();
+            var cityData = {};
+            
+            Object.keys(sehirKoordinatlari).forEach(function(sehir) {
+                var koord = sehirKoordinatlari[sehir];
+                var pos = latLonToVector3(koord.lat, koord.lon, 1.02);
+                
+                // Parlak nokta
+                var dotGeo = new THREE.SphereGeometry(0.02, 16, 16);
+                var dotMat = new THREE.MeshBasicMaterial({ color: 0xff3333 });
+                var dot = new THREE.Mesh(dotGeo, dotMat);
+                dot.position.copy(pos);
+                dot.userData = { sehir: sehir, ziyaretci: 0 };
+                cityPoints.add(dot);
+                
+                // Parlama halkası
+                var ringGeo = new THREE.RingGeometry(0.025, 0.04, 32);
+                var ringMat = new THREE.MeshBasicMaterial({ color: 0xff6666, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
+                var ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.position.copy(pos);
+                ring.lookAt(0, 0, 0);
+                ring.userData = { isRing: true, baseOpacity: 0.6 };
+                cityPoints.add(ring);
+                
+                cityData[sehir] = { dot: dot, ring: ring, pos: pos };
+            });
+            
+            globe.add(cityPoints);
+            
+            // Ziyaretçi güncelleme
+            window.updateCityVisitors = function(sehirVerileri) {
+                var maxZ = 1;
+                Object.values(sehirVerileri).forEach(function(s) { if (s > maxZ) maxZ = s; });
+                Object.keys(cityData).forEach(function(sehir) {
+                    var z = sehirVerileri[sehir] || 0;
+                    var d = cityData[sehir];
+                    d.dot.scale.setScalar(1 + (z / maxZ) * 2);
+                    d.dot.userData.ziyaretci = z;
+                });
+            };
+            
+            // Yeni ziyaretçi pulse
+            window.newVisitorPulse = function(sehir) {
+                var d = cityData[sehir];
+                if (!d) return;
+                var pulseGeo = new THREE.RingGeometry(0.01, 0.1, 32);
+                var pulseMat = new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 1, side: THREE.DoubleSide });
+                var pulse = new THREE.Mesh(pulseGeo, pulseMat);
+                pulse.position.copy(d.pos);
+                pulse.lookAt(0, 0, 0);
+                globe.add(pulse);
+                var start = Date.now();
+                function anim() {
+                    var e = (Date.now() - start) / 1000;
+                    if (e > 2) { globe.remove(pulse); return; }
+                    pulse.scale.setScalar(1 + e * 3);
+                    pulseMat.opacity = 1 - e / 2;
+                    requestAnimationFrame(anim);
+                }
+                anim();
+            };
+            
+            // Mouse kontrolü
+            var isDragging = false;
+            var previousMousePosition = { x: 0, y: 0 };
+            var autoRotate = true;
+            
+            container.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                autoRotate = false;
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                setTimeout(function() { autoRotate = true; }, 3000);
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                var deltaX = e.clientX - previousMousePosition.x;
+                var deltaY = e.clientY - previousMousePosition.y;
+                globe.rotation.y += deltaX * 0.005;
+                globe.rotation.x += deltaY * 0.005;
+                globe.rotation.x = Math.max(-0.5, Math.min(0.5, globe.rotation.x));
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            });
+            
+            // Tıklama - şehir bilgisi
+            var raycaster = new THREE.Raycaster();
+            var mouse = new THREE.Vector2();
+            container.addEventListener('click', function(e) {
+                if (isDragging) return;
+                var rect = container.getBoundingClientRect();
+                mouse.x = ((e.clientX - rect.left) / 500) * 2 - 1;
+                mouse.y = -((e.clientY - rect.top) / 500) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                var intersects = raycaster.intersectObjects(cityPoints.children);
+                if (intersects.length > 0 && intersects[0].object.userData.sehir) {
+                    var s = intersects[0].object.userData.sehir;
+                    var z = intersects[0].object.userData.ziyaretci || 0;
+                    alert('📍 ' + s + '\n👥 ' + z + ' ziyaretçi');
+                }
+            });
+            
+            // Animasyon
+            var time = 0;
+            function animate() {
+                requestAnimationFrame(animate);
+                time += 0.02;
+                if (autoRotate) globe.rotation.y += 0.002;
+                stars.rotation.y += 0.0002;
+                cityPoints.children.forEach(function(c) {
+                    if (c.userData.isRing) c.material.opacity = c.userData.baseOpacity + Math.sin(time * 3) * 0.3;
+                });
+                renderer.render(scene, camera);
+            }
+            animate();
+            
+            console.log('✅ Gerçek Dünya Globe yüklendi');
+        } catch(e) {
+            console.log('Globe hatası:', e);
+        }
+    }, 500);
+});
+</script>
+
+<!-- AYLIK SATIŞ TAKVİMİ -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🗓️</span> AYLIK SATIŞ TAKVİMİ
+</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;text-align:center">
+<div style="color:#888;font-size:12px;padding:5px">Pzt</div>
+<div style="color:#888;font-size:12px;padding:5px">Sal</div>
+<div style="color:#888;font-size:12px;padding:5px">Çar</div>
+<div style="color:#888;font-size:12px;padding:5px">Per</div>
+<div style="color:#888;font-size:12px;padding:5px">Cum</div>
+<div style="color:#888;font-size:12px;padding:5px">Cmt</div>
+<div style="color:#888;font-size:12px;padding:5px">Paz</div>
+</div>
+<div id="calendarDays" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px">
+</div>
+</div>
+<script>
+// Aylık Satış Takvimi - Firebase'e bağlı
+function aylikTakvimiBagla() {
+  if(typeof database === 'undefined') { setTimeout(aylikTakvimiBagla, 500); return; }
+  
+  var simdi = new Date();
+  var yil = simdi.getFullYear();
+  var ay = simdi.getMonth();
+  var bugun = simdi.getDate();
+  
+  // Ayın ilk günü hangi gün
+  var ilkGun = new Date(yil, ay, 1).getDay();
+  if(ilkGun === 0) ilkGun = 7; // Pazar'ı 7 yap
+  ilkGun--; // 0-indexed yap (Pazartesi=0)
+  
+  // Ayın kaç gün
+  var ayinGunSayisi = new Date(yil, ay + 1, 0).getDate();
+  
+  database.ref('siparisler').once('value', function(snapshot) {
+    var gunlukSatis = {};
+    
+    snapshot.forEach(function(child) {
+      var siparis = child.val();
+      if(siparis && siparis.tarih) {
+        var parcalar = siparis.tarih.split('.');
+        if(parcalar.length === 3) {
+          var sGun = parseInt(parcalar[0]);
+          var sAy = parseInt(parcalar[1]) - 1;
+          var sYil = parseInt(parcalar[2]);
+          if(sAy === ay && sYil === yil) {
+            gunlukSatis[sGun] = (gunlukSatis[sGun] || 0) + 1;
+          }
+        }
+      }
+    });
+    
+    var container = document.getElementById('calendarDays');
+    if(!container) return;
+    container.innerHTML = '';
+    
+    // Boş günler (ayın başı)
+    for(var i=0; i<ilkGun; i++) {
+      var bos = document.createElement('div');
+      bos.style.cssText = 'padding:8px;';
+      container.appendChild(bos);
+    }
+    
+    // Ayın günleri
+    for(var gun=1; gun<=ayinGunSayisi; gun++) {
+      var div = document.createElement('div');
+      var satis = gunlukSatis[gun] || 0;
+      var bugunMu = (gun === bugun);
+      
+      var bgColor = 'rgba(255,255,255,0.05)';
+      if(satis > 0) bgColor = 'rgba(67,233,123,0.3)';
+      if(satis >= 5) bgColor = 'rgba(67,233,123,0.5)';
+      if(satis >= 10) bgColor = 'rgba(67,233,123,0.7)';
+      if(bugunMu) bgColor = 'rgba(79,172,254,0.4)';
+      
+      div.style.cssText = 'padding:8px;background:'+bgColor+';border-radius:5px;font-size:12px;position:relative;'+(bugunMu?'border:2px solid #4facfe;':'');
+      div.innerHTML = '<div style="font-weight:bold">'+gun+'</div>'+(satis>0?'<div style="font-size:9px;color:#43e97b">'+satis+'</div>':'');
+      container.appendChild(div);
+    }
+  });
+}
+window.addEventListener('load', aylikTakvimiBagla);
+</script>
+
+<!-- MÜŞTERİ YORUMLARI -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:10px">
+<span>💬</span> MÜŞTERİ MEMNUNİYETİ
+</div>
+<div style="display:flex;align-items:center;gap:5px">
+<span style="color:#ffc107">★★★★★</span>
+<span id="avgRating" style="font-weight:bold">5.0</span>
+</div>
+</div>
+<div id="customerReviews" style="max-height:200px;overflow-y:auto">
+<div style="padding:15px;background:rgba(255,255,255,0.05);border-radius:10px;margin-bottom:10px">
+<div style="display:flex;justify-content:space-between;margin-bottom:8px">
+<span style="font-weight:bold">👤 Müşteri</span>
+<span style="color:#ffc107">★★★★★</span>
+</div>
+<div style="color:#888;font-size:13px">"Henüz yorum yok"</div>
+</div>
+</div>
+</div>
+
+<!-- TRAFİK KAYNAKLARI -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🔍</span> TRAFİK KAYNAKLARI
+</div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;align-items:center;gap:15px">
+<span style="font-size:24px">🔎</span>
+<div style="flex:1">
+<div style="display:flex;justify-content:space-between;margin-bottom:5px">
+<span>Google</span><span id="googleTraffic">0%</span>
+</div>
+<div style="background:#333;border-radius:5px;height:8px;overflow:hidden">
+<div id="googleBar" style="background:#4285f4;height:100%;width:0%"></div>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<span style="font-size:24px">📸</span>
+<div style="flex:1">
+<div style="display:flex;justify-content:space-between;margin-bottom:5px">
+<span>Instagram</span><span id="instaTraffic">0%</span>
+</div>
+<div style="background:#333;border-radius:5px;height:8px;overflow:hidden">
+<div id="instaBar" style="background:linear-gradient(90deg,#833ab4,#fd1d1d,#fcb045);height:100%;width:0%"></div>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<span style="font-size:24px">🎵</span>
+<div style="flex:1">
+<div style="display:flex;justify-content:space-between;margin-bottom:5px">
+<span>TikTok</span><span id="tiktokTraffic">0%</span>
+</div>
+<div style="background:#333;border-radius:5px;height:8px;overflow:hidden">
+<div id="tiktokBar" style="background:#000;height:100%;width:0%"></div>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;gap:15px">
+<span style="font-size:24px">🔗</span>
+<div style="flex:1">
+<div style="display:flex;justify-content:space-between;margin-bottom:5px">
+<span>Direkt</span><span id="directTraffic">0%</span>
+</div>
+<div style="background:#333;border-radius:5px;height:8px;overflow:hidden">
+<div id="directBar" style="background:#43e97b;height:100%;width:0%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SOSYAL MEDYA -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>📱</span> SOSYAL MEDYA
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px">
+<div style="text-align:center;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);padding:20px;border-radius:10px;cursor:pointer" onclick="sosyalMedyaDuzenle('instagram')">
+<div style="font-size:30px">📸</div>
+<div style="font-size:20px;font-weight:bold" id="instaFollowers">0</div>
+<div style="font-size:11px;opacity:0.8">Takipçi</div>
+</div>
+<div style="text-align:center;background:#000;padding:20px;border-radius:10px;border:1px solid #333;cursor:pointer" onclick="sosyalMedyaDuzenle('tiktok')">
+<div style="font-size:30px">🎵</div>
+<div style="font-size:20px;font-weight:bold" id="tiktokFollowers">0</div>
+<div style="font-size:11px;opacity:0.8">Takipçi</div>
+</div>
+<div style="text-align:center;background:#25D366;padding:20px;border-radius:10px;cursor:pointer" onclick="sosyalMedyaDuzenle('whatsapp')">
+<div style="font-size:30px">💬</div>
+<div style="font-size:20px;font-weight:bold" id="whatsappMsgs">0</div>
+<div style="font-size:11px;opacity:0.8">Mesaj</div>
+</div>
+</div>
+</div>
+<script>
+// Sosyal Medya - Firebase'e bağlı
+function sosyalMedyaBagla() {
+  if(typeof database === 'undefined') { setTimeout(sosyalMedyaBagla, 500); return; }
+  
+  database.ref('sosyalMedya').on('value', function(snapshot) {
+    var data = snapshot.val() || {};
+    var instaEl = document.getElementById('instaFollowers');
+    var tiktokEl = document.getElementById('tiktokFollowers');
+    var whatsappEl = document.getElementById('whatsappMsgs');
+    
+    if(instaEl) instaEl.textContent = (data.instagram || 0).toLocaleString('tr-TR');
+    if(tiktokEl) tiktokEl.textContent = (data.tiktok || 0).toLocaleString('tr-TR');
+    if(whatsappEl) whatsappEl.textContent = (data.whatsapp || 0).toLocaleString('tr-TR');
+  });
+}
+function sosyalMedyaDuzenle(platform) {
+  var mevcutDeger = document.getElementById(platform === 'instagram' ? 'instaFollowers' : (platform === 'tiktok' ? 'tiktokFollowers' : 'whatsappMsgs')).textContent;
+  var yeniDeger = prompt(platform.toUpperCase() + ' sayısını girin:', mevcutDeger.replace(/\./g,''));
+  if(yeniDeger !== null && !isNaN(yeniDeger)) {
+    database.ref('sosyalMedya/' + platform).set(parseInt(yeniDeger));
+  }
+}
+window.addEventListener('load', sosyalMedyaBagla);
+</script>
+
+<!-- STOK DURUMU -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🏷️</span> STOK DURUMU
+</div>
+<div id="stockStatus" style="max-height:250px;overflow-y:auto">
+</div>
+</div>
+<script>
+// Stok Durumu - Firebase'e bağlı
+function stokDurumunuBagla() {
+  if(typeof database === 'undefined') { setTimeout(stokDurumunuBagla, 500); return; }
+  
+  database.ref('forumStoklar').on('value', function(snapshot) {
+    var stoklar = snapshot.val() || {};
+    var container = document.getElementById('stockStatus');
+    if(!container) return;
+    
+    var html = '';
+    for(var i=1; i<=10; i++) {
+      var stok = stoklar['forum'+i] || 0;
+      var durum, renk, ikon;
+      
+      if(stok <= 0) {
+        durum = 'Tükendi'; renk = '#dc3545'; ikon = '❌';
+      } else if(stok <= 5) {
+        durum = 'Az Kaldı ('+stok+')'; renk = '#ffc107'; ikon = '⚠️';
+      } else {
+        durum = 'Stokta ('+stok+')'; renk = '#28a745'; ikon = '✓';
+      }
+      
+      var bgOpacity = stok <= 0 ? '0.15' : (stok <= 5 ? '0.1' : '0.1');
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba('+hexToRgb(renk)+','+bgOpacity+');border-radius:8px;margin-bottom:8px;border-left:4px solid '+renk+'"><span>Ürün '+i+'</span><span style="color:'+renk+';font-weight:bold">'+ikon+' '+durum+'</span></div>';
+    }
+    container.innerHTML = html;
+  });
+}
+function hexToRgb(hex) {
+  if(hex.charAt(0) === '#') hex = hex.substr(1);
+  if(hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+  var r = parseInt(hex.substr(0,2),16), g = parseInt(hex.substr(2,2),16), b = parseInt(hex.substr(4,2),16);
+  return r+','+g+','+b;
+}
+window.addEventListener('load', stokDurumunuBagla);
+</script>
+
+<!-- EN YOĞUN SAATLER -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>⏰</span> EN YOĞUN SAATLER
+</div>
+<div id="hourlyChart" style="display:flex;align-items:flex-end;justify-content:space-between;height:100px;padding:10px 0">
+</div>
+<div id="peakHourText" style="text-align:center;margin-top:10px;color:#fa709a;font-size:13px">🔥 En yoğun saat: <strong>--:00</strong></div>
+</div>
+<script>
+// En Yoğun Saatler - Firebase'e bağlı
+function saatlikGrafigiBagla() {
+  if(typeof database === 'undefined') { setTimeout(saatlikGrafigiBagla, 500); return; }
+  
+  var saatler = [0,3,6,9,12,15,18,21]; // 3 saatlik dilimler
+  var saatlikAktivite = {};
+  saatler.forEach(function(s){ saatlikAktivite[s] = 0; });
+  
+  // Ziyaretçilerden saat bilgisi al
+  database.ref('ziyaretciler').once('value', function(snapshot) {
+    snapshot.forEach(function(child) {
+      var data = child.val();
+      if(data && data.timestamp) {
+        var saat = new Date(data.timestamp).getHours();
+        var dilim = Math.floor(saat / 3) * 3; // 0,3,6,9,12,15,18,21
+        saatlikAktivite[dilim] = (saatlikAktivite[dilim] || 0) + 1;
+      }
+    });
+    
+    // Siparişlerden de ekle
+    database.ref('siparisler').once('value', function(sipSnap) {
+      sipSnap.forEach(function(child) {
+        var data = child.val();
+        if(data && data.timestamp) {
+          var saat = new Date(data.timestamp).getHours();
+          var dilim = Math.floor(saat / 3) * 3;
+          saatlikAktivite[dilim] = (saatlikAktivite[dilim] || 0) + 2; // Sipariş 2 puan
+        }
+      });
+      
+      // Grafiği çiz
+      var container = document.getElementById('hourlyChart');
+      if(!container) return;
+      container.innerHTML = '';
+      
+      var maxAktivite = Math.max.apply(null, Object.values(saatlikAktivite)) || 1;
+      var enYogunSaat = 0, enYogunDeger = 0;
+      
+      saatler.forEach(function(saat) {
+        var aktivite = saatlikAktivite[saat] || 0;
+        if(aktivite > enYogunDeger) { enYogunDeger = aktivite; enYogunSaat = saat; }
+        
+        var yuzde = (aktivite / maxAktivite) * 100;
+        var yukseklik = Math.max(10, yuzde);
+        var enYogunMu = (aktivite === maxAktivite && aktivite > 0);
+        var renk = enYogunMu ? 'rgba(250,112,154,1)' : 'rgba(79,172,254,0.5)';
+        
+        var div = document.createElement('div');
+        div.style.cssText = 'text-align:center;flex:1';
+        div.innerHTML = '<div style="background:'+renk+';height:'+yukseklik+'px;border-radius:3px 3px 0 0;margin:0 2px"></div><div style="font-size:9px;color:#888;margin-top:3px">'+saat.toString().padStart(2,'0')+'</div>';
+        container.appendChild(div);
+      });
+      
+      var peakText = document.getElementById('peakHourText');
+      if(peakText) peakText.innerHTML = '🔥 En yoğun saat: <strong>'+enYogunSaat.toString().padStart(2,'0')+':00</strong>';
+    });
+  });
+}
+window.addEventListener('load', saatlikGrafigiBagla);
+</script>
+
+<!-- ÜRÜN SAYFALARI YÖNETİMİ -->
+<div style="margin-top:25px;background:rgba(0,0,0,0.4);border:1px solid #333;border-radius:15px;padding:20px">
+<div style="font-size:18px;font-weight:bold;margin-bottom:20px;display:flex;align-items:center;gap:10px">
+<span>🛍️</span> ÜRÜN SAYFALARI YÖNETİMİ
+</div>
+<div style="font-size:12px;color:#888;margin-bottom:15px;padding:10px;background:rgba(255,193,7,0.1);border-radius:8px;border-left:4px solid #ffc107">
+👁️ Müşteri gözüyle test et | 🔴 KAPALI = Müşteri admin görmez | 🟢 AÇIK = Müşteri admin görür
+</div>
+<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px" id="urunSayfaYonetim">
+</div>
+<script>
+function urunSayfaYonetimYukle(){
+var container = document.getElementById('urunSayfaYonetim');
+var html = '';
+for(var i=1; i<=10; i++){
+var durum = localStorage.getItem(getAnaSayfaKey('urun_sayfa_admin_'+i));
+var kapali = durum === 'kapali';
+html += '<div style="background:'+(kapali?'rgba(220,53,69,0.15)':'rgba(40,167,69,0.15)')+';border:1px solid '+(kapali?'#dc3545':'#28a745')+';border-radius:10px;padding:12px;text-align:center">';
+html += '<div style="font-weight:bold;font-size:14px;color:#fff;margin-bottom:8px">ÜRÜN '+i+'</div>';
+html += '<div style="display:flex;gap:6px;justify-content:center">';
+html += '<button onclick="musteriOnizle('+i+')" style="background:#4facfe;color:#fff;border:none;width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:16px" title="Müşteri gözüyle bak">👁️</button>';
+html += '<button onclick="urunSayfaToggle('+i+')" style="background:'+(kapali?'#dc3545':'#28a745')+';color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:11px">'+(kapali?'KAPALI':'AÇIK')+'</button>';
+html += '</div></div>';
+}
+container.innerHTML = html;
+}
+function urunSayfaToggle(num){
+var durum = localStorage.getItem(getAnaSayfaKey('urun_sayfa_admin_'+num));
+if(durum === 'kapali'){
+localStorage.setItem(getAnaSayfaKey('urun_sayfa_admin_'+num), 'acik');
+}else{
+localStorage.setItem(getAnaSayfaKey('urun_sayfa_admin_'+num), 'kapali');
+}
+urunSayfaYonetimYukle();
+}
+function musteriOnizle(num){
+window.open('urun-'+num+'.html?test=1', '_blank');
+}
+urunSayfaYonetimYukle();
+</script>
+</div>
+</div>
+
+</div>
+<!-- SARAY DASHBOARD SON -->
+</div>
+
+<!-- GARİBAN WIDGET - Akıllı Asistan -->
+<script src="ramco-beyin.js"></script>
+<script src="ramco-widget.js"></script>
+
+<!-- KULLANIM KILAVUZU - TELEFON ŞEKLİNDE -->
+<div id="kilavuzOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;justify-content:center;align-items:center">
+<div id="telefonKilavuz" style="width:260px;height:450px;background:linear-gradient(180deg,#1a1a2e,#16213e);border-radius:30px;position:relative;box-shadow:0 0 60px rgba(233,69,96,0.3),inset 0 0 20px rgba(0,0,0,0.5);border:3px solid #333;overflow:hidden">
+<div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:25px;background:#000;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:10px">
+<div style="width:8px;height:8px;background:#333;border-radius:50%"></div>
+<div style="width:50px;height:5px;background:#333;border-radius:3px"></div>
+</div>
+<button onclick="kilavuzKapat()" style="position:absolute;top:15px;right:15px;background:rgba(220,53,69,0.8);border:none;color:#fff;width:35px;height:35px;border-radius:50%;cursor:pointer;font-size:18px;z-index:10">✕</button>
+<div style="padding:45px 15px 120px;height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none">
+<div style="text-align:center;margin-bottom:25px;padding-bottom:20px;border-bottom:2px solid rgba(233,69,96,0.3)">
+<div style="font-size:50px;margin-bottom:10px">📖</div>
+<h1 style="color:#e94560;font-size:22px;margin:0;text-shadow:0 0 20px rgba(233,69,96,0.5)">KULLANIM KILAVUZU</h1>
+<p style="color:#888;font-size:12px;margin-top:8px">E-Ticaret Yönetim Sistemi</p>
+</div>
+<div style="background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(218,165,32,0.2));border:2px solid #FFD700;border-radius:15px;padding:20px;margin-bottom:20px;text-align:center;box-shadow:0 0 30px rgba(255,215,0,0.3)">
+<div style="font-size:16px;color:#FFD700;margin-bottom:8px;text-shadow:0 0 10px rgba(255,215,0,0.5)">👑 KURUCU</div>
+<div style="font-size:24px;font-weight:900;background:linear-gradient(135deg,#FFD700,#FFA500,#FFD700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;letter-spacing:2px">RAMADAN ŞEFTALİ</div>
+<div style="font-size:11px;color:#DAA520;margin-top:8px">E-Ticaret Yönetim Sistemi Geliştiricisi</div>
+</div>
+<div style="color:#fff">
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #e94560">
+<h3 style="color:#e94560;margin:0 0 10px;font-size:16px">🚀 GİRİŞ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Bu sistem e-ticaret sitenizi yönetmeniz için tasarlandı. Tüm satışlar, siparişler ve müşteri bilgileri tek panelden kontrol edilir.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #4facfe">
+<h3 style="color:#4facfe;margin:0 0 10px;font-size:16px">🔐 ADMİN GİRİŞİ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0"><strong>URL:</strong> /admin.html<br><strong>Şifre:</strong> Belirlediğiniz şifre<br>Giriş yaptıktan sonra hoş geldin ekranı açılır.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #43e97b">
+<h3 style="color:#43e97b;margin:0 0 10px;font-size:16px">📂 ÜST ÇEKMECE</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Sağ üstteki <strong>↓</strong> butonuna tıklayın. Tüm yönetim araçlarına buradan ulaşırsınız.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #f093fb">
+<h3 style="color:#f093fb;margin:0 0 10px;font-size:16px">🔗 URL ÇEKMECESİ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0"><strong>URL</strong> butonuna tıklayın. 10 ürün sayfasının linklerini kopyalayabilirsiniz. Reklamlarda bu linkleri kullanın. WhatsApp numaranızı da buradan ayarlayın.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #ffc107">
+<h3 style="color:#ffc107;margin:0 0 10px;font-size:16px">🔒 SAYFA KONTROLÜ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Üst çekmecede her ürün için AÇ/KAPAT toggle'ı var. Kapalı sayfaya müşteri giremez, "Sayfa Kullanılamıyor" mesajı görür.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #00f2fe">
+<h3 style="color:#00f2fe;margin:0 0 10px;font-size:16px">📊 DASHBOARD</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Ana sayfada tüm istatistikler:<br>• Canlı ziyaretçi sayısı<br>• Bugün/Toplam sipariş<br>• Ciro ve dönüşüm oranı<br>• Cihaz dağılımı<br>• Şehir bazlı veriler<br>• Haftalık satış grafiği</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #000">
+<h3 style="color:#fff;margin:0 0 10px;font-size:16px">🎵 TİKTOK PİXEL</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">TikTok reklam takibi için Pixel ID'nizi girin. Sayfa görüntüleme, sepete ekleme ve satın alma olayları otomatik takip edilir.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #0095F6">
+<h3 style="color:#0095F6;margin:0 0 10px;font-size:16px">📘 META PİXEL</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Facebook/Instagram reklam takibi için Meta Pixel ID'nizi girin. Dönüşüm takibi ve hedef kitle oluşturma için gerekli.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #9C27B0">
+<h3 style="color:#9C27B0;margin:0 0 10px;font-size:16px">🌐 DOMAİN BAĞLA</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Firebase veritabanı ayarlarınızı buradan yapın. API Key, Project ID ve Database URL bilgilerini girin. Tüm veriler sizin Firebase'inizde saklanır.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #96bf3d">
+<h3 style="color:#96bf3d;margin:0 0 10px;font-size:16px">🛒 SHOPİFY</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Shopify mağazanızı entegre edin. Siparişler otomatik olarak Shopify'a aktarılır. Store URL, API Key ve Access Token gerekli.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #FFC107">
+<h3 style="color:#FFC107;margin:0 0 10px;font-size:16px">💰 MUHASEBE</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Gelir ve giderlerinizi takip edin. Kategori bazlı raporlar, aylık özet ve kar/zarar analizi. Muhasebeciye gönderilecek raporlar oluşturun.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #1B5E20">
+<h3 style="color:#4CAF50;margin:0 0 10px;font-size:16px">📥 GELEN FATURALAR</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Tedarikçilerden gelen faturaları kaydedin. Fatura görselini yükleyin, tutarı ve tarihi girin. Gider takibi için kullanın.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #00008B">
+<h3 style="color:#5c6bc0;margin:0 0 10px;font-size:16px">📤 FATURA GÖNDER</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Müşterilerinize fatura oluşturun ve gönderin. Firma bilgileri, ürün detayları ve KDV hesaplaması otomatik yapılır.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #FF8C00">
+<h3 style="color:#FF8C00;margin:0 0 10px;font-size:16px">📦 KARGO GÖNDER</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Kargo firmalarıyla entegrasyon. Sipariş seçin, kargo firmasını belirleyin ve takip numarası oluşturun. Müşteriye otomatik bildirim gider.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #1B5E20">
+<h3 style="color:#4CAF50;margin:0 0 10px;font-size:16px">📋 SİPARİŞ TAKİBİ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Tüm siparişleri görün ve yönetin. Durum güncelleme (Beklemede, Hazırlanıyor, Kargoda, Teslim Edildi), filtreleme ve arama özellikleri.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #2C3E50">
+<h3 style="color:#95a5a6;margin:0 0 10px;font-size:16px">⚙️ OTOMASYON</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Otomatik işlemler tanımlayın. Yeni sipariş bildirimi, stok uyarısı, günlük rapor gönderimi gibi otomasyonlar kurun.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #6f42c1">
+<h3 style="color:#6f42c1;margin:0 0 10px;font-size:16px">📋 POLİTİKALAR</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Her ürün için ayrı politikalar tanımlayın:<br>• Gizlilik Politikası<br>• Ön Bilgilendirme Formu<br>• İptal ve İade Politikası<br>• Teslimat Koşulları<br>• İletişim Bilgileri<br>Müşteriler ürün sayfasının altındaki linklerden okuyabilir.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #e94560">
+<h3 style="color:#e94560;margin:0 0 10px;font-size:16px">🤖 GARİBAN (Yapay Zeka)</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Sağ alttaki kırmızı yüze tıklayın. Sesli veya yazılı komut verin. Analiz, özet, motivasyon ve daha fazlası!</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #dc3545">
+<h3 style="color:#dc3545;margin:0 0 10px;font-size:16px">🔐 ŞİFRE DEĞİŞTİR</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0">Admin şifrenizi değiştirin. Güvenlik için düzenli olarak şifre değiştirmeniz önerilir.</p>
+</div>
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #9b59b6">
+<h3 style="color:#9b59b6;margin:0 0 10px;font-size:16px">⌨️ KISAYOLLAR</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.6;margin:0"><strong>Ctrl</strong> = Bu kılavuzu aç/kapat<br><strong>Esc</strong> = Kılavuzu kapat</p>
+</div>
+
+<!-- KULLANIM KILAVUZU -->
+<div style="margin:30px 0 20px;padding:20px 0;border-top:2px solid #e94560;border-bottom:2px solid #e94560">
+<h2 style="color:#e94560;margin:0;font-size:20px;text-align:center">📖 DETAYLI KULLANIM KILAVUZU</h2>
+</div>
+
+<!-- 1. İLK KURULUM -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #e94560">
+<h3 style="color:#e94560;margin:0 0 15px;font-size:16px">🔧 1. İLK KURULUM</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Adım 1:</strong> Firebase Console'a gidin (console.firebase.google.com)<br>
+<strong style="color:#fff">Adım 2:</strong> Yeni proje oluşturun<br>
+<strong style="color:#fff">Adım 3:</strong> Realtime Database'i etkinleştirin<br>
+<strong style="color:#fff">Adım 4:</strong> Kuralları şu şekilde ayarlayın:<br>
+<code style="background:#000;padding:5px 10px;border-radius:5px;display:block;margin:10px 0;color:#4CAF50">{"rules": {".read": true, ".write": true}}</code>
+<strong style="color:#fff">Adım 5:</strong> Proje ayarlarından API Key, Project ID ve Database URL'yi kopyalayın<br>
+<strong style="color:#fff">Adım 6:</strong> Domain Bağla sayfasına gidip bu bilgileri yapıştırın<br>
+<strong style="color:#fff">Adım 7:</strong> Kaydet butonuna tıklayın - Artık hazırsınız!
+</p>
+</div>
+
+<!-- 2. ÜRÜN SAYFALARI -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #4CAF50">
+<h3 style="color:#4CAF50;margin:0 0 15px;font-size:16px">🛍️ 2. ÜRÜN SAYFALARI AYARLAMA</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Görsel Ekleme:</strong><br>
+• Ana sayfadan ADMIN butonuna tıklayın<br>
+• Ürün sayfasına gidin, sol çekmeceden görselleri yükleyin<br>
+• 15 üst görsel + 1 alt görsel ekleyebilirsiniz<br><br>
+<strong style="color:#fff">Fiyat ve İsim:</strong><br>
+• Sol çekmecede her adet için fiyat ve isim girin<br>
+• 1-8 adet seçeneği tanımlayabilirsiniz<br>
+• Göster/Gizle ile hangi adetlerin görüneceğini seçin<br><br>
+<strong style="color:#fff">Sayfa Açma/Kapama:</strong><br>
+• Üst çekmecede toggle butonlarıyla sayfaları açıp kapatın<br>
+• Kapalı sayfaya müşteri giremez
+</p>
+</div>
+
+<!-- 3. PIXEL KURULUMU -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #000">
+<h3 style="color:#fff;margin:0 0 15px;font-size:16px">📊 3. REKLAM PİXEL KURULUMU</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">TikTok Pixel:</strong><br>
+• TikTok Ads Manager'dan Pixel ID'nizi alın<br>
+• Üst çekmeceden TikTok Pixel sayfasına gidin<br>
+• Pixel ID'yi yapıştırın ve kaydedin<br>
+• Otomatik olarak: PageView, AddToCart, Purchase takip edilir<br><br>
+<strong style="color:#fff">Meta Pixel:</strong><br>
+• Facebook Events Manager'dan Pixel ID'nizi alın<br>
+• Üst çekmeceden Meta Pixel sayfasına gidin<br>
+• Pixel ID'yi yapıştırın ve kaydedin<br>
+• Facebook ve Instagram reklamları için dönüşüm takibi aktif olur
+</p>
+</div>
+
+<!-- 4. SİPARİŞ YÖNETİMİ -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #1B5E20">
+<h3 style="color:#4CAF50;margin:0 0 15px;font-size:16px">📦 4. SİPARİŞ YÖNETİMİ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Yeni Sipariş Geldiğinde:</strong><br>
+• Dashboard'da sipariş sayısı güncellenir<br>
+• Sipariş Takibi sayfasında detayları görün<br>
+• Müşteri bilgileri, ürün, adet ve fiyat listelenir<br><br>
+<strong style="color:#fff">Sipariş Durumu Güncelleme:</strong><br>
+• Beklemede → Hazırlanıyor → Kargoda → Teslim Edildi<br>
+• Her durumda müşteriye bildirim gönderebilirsiniz<br><br>
+<strong style="color:#fff">Kargo Gönderme:</strong><br>
+• Kargo Gönder sayfasından sipariş seçin<br>
+• Kargo firmasını belirleyin<br>
+• Takip numarası otomatik oluşturulur
+</p>
+</div>
+
+<!-- 5. MUHASEBE -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #FFC107">
+<h3 style="color:#FFC107;margin:0 0 15px;font-size:16px">💰 5. MUHASEBE VE FATURA</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Gelir Takibi:</strong><br>
+• Siparişler otomatik olarak gelir olarak kaydedilir<br>
+• Günlük, haftalık, aylık raporlar görüntüleyin<br><br>
+<strong style="color:#fff">Gider Ekleme:</strong><br>
+• Gelen Faturalar sayfasından giderlerinizi ekleyin<br>
+• Fatura görseli yükleyin, tutar ve kategori seçin<br><br>
+<strong style="color:#fff">Fatura Oluşturma:</strong><br>
+• Fatura Gönder sayfasından müşteriye fatura kesin<br>
+• Firma bilgileri, ürünler ve KDV otomatik hesaplanır<br>
+• PDF olarak indirin veya e-posta ile gönderin
+</p>
+</div>
+
+<!-- 6. POLİTİKALAR -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #6f42c1">
+<h3 style="color:#6f42c1;margin:0 0 15px;font-size:16px">📋 6. POLİTİKALAR AYARLAMA</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Politika Ekleme:</strong><br>
+• Üst çekmeceden Politikalar sayfasına gidin<br>
+• Üstten ürün seçin (ÜRÜN 1, ÜRÜN 2...)<br>
+• Soldan politika türünü seçin<br>
+• Metni yazın ve KAYDET'e tıklayın<br><br>
+<strong style="color:#fff">Emoji Kullanımı:</strong><br>
+• Textarea üstündeki emoji butonlarını kullanın<br>
+• Satır başlarına madde işaretleri ekleyin<br><br>
+<strong style="color:#fff">Müşteri Görünümü:</strong><br>
+• Ürün sayfasının altında politika linkleri görünür<br>
+• Tıklayınca popup açılır, başlık sabit kalır, içerik kayar
+</p>
+</div>
+
+<!-- 7. SHOPIFY -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #96bf3d">
+<h3 style="color:#96bf3d;margin:0 0 15px;font-size:16px">🛒 7. SHOPİFY ENTEGRASYONU</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Bağlantı Kurma:</strong><br>
+• Shopify Admin'den özel uygulama oluşturun<br>
+• API Key ve Access Token alın<br>
+• Shopify Ayarlar sayfasına bu bilgileri girin<br><br>
+<strong style="color:#fff">Sipariş Aktarımı:</strong><br>
+• Yeni siparişler otomatik Shopify'a aktarılır<br>
+• Stok senkronizasyonu yapılır<br>
+• Müşteri bilgileri eşleştirilir
+</p>
+</div>
+
+<!-- 8. YAPAY ZEKA -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #e94560">
+<h3 style="color:#e94560;margin:0 0 15px;font-size:16px">🤖 8. GARİBAN YAPAY ZEKA</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Nasıl Kullanılır:</strong><br>
+• Sağ alttaki kırmızı yüze tıklayın<br>
+• Mikrofon ikonuna basılı tutup konuşun<br>
+• Veya metin kutusuna yazın<br><br>
+<strong style="color:#fff">Yapabilecekleri:</strong><br>
+• "Bugünkü satışları özetle"<br>
+• "En çok satan ürün hangisi?"<br>
+• "Motivasyon ver"<br>
+• "Haftalık rapor oluştur"<br>
+• Sorularınızı sorun, analiz yapsın!
+</p>
+</div>
+
+<!-- 9. GÜVENLİK -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #dc3545">
+<h3 style="color:#dc3545;margin:0 0 15px;font-size:16px">🔒 9. GÜVENLİK ÖNERİLERİ</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">Şifre Güvenliği:</strong><br>
+• Güçlü şifre kullanın (en az 8 karakter, harf+rakam)<br>
+• Şifrenizi düzenli olarak değiştirin<br>
+• Şifrenizi kimseyle paylaşmayın<br><br>
+<strong style="color:#fff">Firebase Güvenliği:</strong><br>
+• Canlıya geçmeden önce Firebase kurallarını güncelleyin<br>
+• Sadece yetkili kullanıcıların yazmasına izin verin<br><br>
+<strong style="color:#fff">Yedekleme:</strong><br>
+• Firebase verilerinizi düzenli yedekleyin<br>
+• Export özelliğini kullanın
+</p>
+</div>
+
+<!-- 10. SSS -->
+<div style="margin-bottom:20px;background:rgba(0,0,0,0.3);border-radius:12px;padding:15px;border-left:4px solid #00f2fe">
+<h3 style="color:#00f2fe;margin:0 0 15px;font-size:16px">❓ 10. SIK SORULAN SORULAR</h3>
+<p style="color:#aaa;font-size:13px;line-height:1.8;margin:0">
+<strong style="color:#fff">S: Verilerim nerede saklanıyor?</strong><br>
+C: Kendi Firebase veritabanınızda. Biz hiçbir verinize erişemiyoruz.<br><br>
+<strong style="color:#fff">S: Birden fazla site açabilir miyim?</strong><br>
+C: Evet, her site için ayrı Firebase projesi oluşturun.<br><br>
+<strong style="color:#fff">S: Mobilde çalışıyor mu?</strong><br>
+C: Evet, tüm sayfalar mobil uyumludur.<br><br>
+<strong style="color:#fff">S: Siparişler kaybolur mu?</strong><br>
+C: Hayır, Firebase'de güvenle saklanır. İnternet olmadan da localStorage'da yedeklenir.
+</p>
+</div>
+
+<div style="margin-bottom:20px;background:linear-gradient(135deg,rgba(233,69,96,0.1),rgba(155,89,182,0.1));border-radius:12px;padding:15px;text-align:center;border:1px solid rgba(233,69,96,0.2)">
+<div style="font-size:11px;color:#666">© 2026 Tüm Hakları Saklıdır</div>
+</div>
+</div>
+</div>
+<div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:100px;height:4px;background:#444;border-radius:2px"></div>
+</div>
+</div>
+
+<script>
+function kilavuzAc() {
+  document.getElementById('kilavuzOverlay').style.display = 'flex';
+}
+function kilavuzKapat() {
+  document.getElementById('kilavuzOverlay').style.display = 'none';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Control') {
+    var kilavuz = document.getElementById('kilavuzOverlay');
+    if (kilavuz.style.display === 'flex') {
+      kilavuzKapat();
+    } else {
+      kilavuzAc();
+    }
+  }
+  if (e.key === 'Escape') {
+    kilavuzKapat();
+    sifreModalKapat();
+  }
+});
+</script>
+
+<!-- ŞİFRE DEĞİŞTİRME MODALI -->
+<div id="sifreModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;justify-content:center;align-items:center">
+<div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);padding:30px;border-radius:15px;text-align:center;max-width:400px;width:90%;border:2px solid #28a745;box-shadow:0 0 30px rgba(40,167,69,0.3)">
+<h3 style="margin-bottom:20px;color:#28a745;font-size:22px">🔐 Şifre Değiştir</h3>
+<div style="margin-bottom:15px;text-align:left">
+<label style="color:#aaa;font-size:12px;display:block;margin-bottom:5px">Yeni Şifre</label>
+<input type="password" id="yeniSifre" placeholder="Yeni şifrenizi girin" style="width:100%;padding:12px;font-size:14px;border:2px solid #333;border-radius:8px;background:#0a0a0a;color:#fff;box-sizing:border-box">
+</div>
+<div style="margin-bottom:20px;text-align:left">
+<label style="color:#aaa;font-size:12px;display:block;margin-bottom:5px">Yeni Şifre (Tekrar)</label>
+<input type="password" id="yeniSifreTekrar" placeholder="Yeni şifrenizi tekrar girin" style="width:100%;padding:12px;font-size:14px;border:2px solid #333;border-radius:8px;background:#0a0a0a;color:#fff;box-sizing:border-box">
+</div>
+<div id="sifreMesaj" style="margin-bottom:15px;padding:10px;border-radius:8px;display:none;font-size:13px"></div>
+<div style="display:flex;gap:10px">
+<button onclick="sifreDegistir()" style="flex:1;background:#28a745;color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold">✓ Kaydet</button>
+<button onclick="sifreModalKapat()" style="flex:1;background:#dc3545;color:#fff;border:none;padding:12px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:bold">✕ İptal</button>
+</div>
+<div style="margin-top:15px;color:#666;font-size:11px">Varsayılan şifre: hayat123</div>
+</div>
+</div>
+
+<script>
+function sifreModalAc() {
+  document.getElementById('sifreModal').style.display = 'flex';
+  document.getElementById('yeniSifre').value = '';
+  document.getElementById('yeniSifreTekrar').value = '';
+  document.getElementById('sifreMesaj').style.display = 'none';
+  document.getElementById('yeniSifre').focus();
+}
+
+function sifreModalKapat() {
+  document.getElementById('sifreModal').style.display = 'none';
+}
+
+function getAdminSifre() {
+  var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('admin_sifre') : 'admin_sifre';
+  var saved = localStorage.getItem(siteKey);
+  if (saved) return saved;
+  return 'hayat123';
+}
+
+function sifreDegistir() {
+  var yeniSifre = document.getElementById('yeniSifre').value;
+  var yeniSifreTekrar = document.getElementById('yeniSifreTekrar').value;
+  var mesajDiv = document.getElementById('sifreMesaj');
+  
+  // Yeni şifre boş kontrolü
+  if(yeniSifre.length < 4) {
+    mesajDiv.style.display = 'block';
+    mesajDiv.style.background = 'rgba(220,53,69,0.2)';
+    mesajDiv.style.color = '#dc3545';
+    mesajDiv.textContent = '❌ Yeni şifre en az 4 karakter olmalı!';
+    return;
+  }
+  
+  // Şifre eşleşme kontrolü
+  if(yeniSifre !== yeniSifreTekrar) {
+    mesajDiv.style.display = 'block';
+    mesajDiv.style.background = 'rgba(220,53,69,0.2)';
+    mesajDiv.style.color = '#dc3545';
+    mesajDiv.textContent = '❌ Yeni şifreler eşleşmiyor!';
+    return;
+  }
+  
+  // Şifreyi kaydet
+  var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('admin_sifre') : 'admin_sifre';
+  localStorage.setItem(siteKey, yeniSifre);
+  
+  mesajDiv.style.display = 'block';
+  mesajDiv.style.background = 'rgba(40,167,69,0.2)';
+  mesajDiv.style.color = '#28a745';
+  mesajDiv.textContent = '✓ Şifre başarıyla değiştirildi!';
+  
+  // 2 saniye sonra modalı kapat
+  setTimeout(function() {
+    sifreModalKapat();
+  }, 2000);
+}
+
+// Enter tuşu ile şifre değiştir
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Enter' && document.getElementById('sifreModal').style.display === 'flex') {
+    sifreDegistir();
+  }
+});
+</script>
+</body>
+</html>

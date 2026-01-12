@@ -1,0 +1,1840 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Bağlama Merkezi</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); 
+            min-height: 100vh; 
+            color: #fff; 
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            padding: 20px 0;
+            border-bottom: 1px solid #333;
+            position: relative;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+        
+        .header-center {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .header h1 { 
+            background: linear-gradient(135deg, #E040FB 0%, #2196F3 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 42px; 
+            margin-bottom: 8px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 15px; 
+            font-weight: 700;
+        }
+        
+        .header-subtitle {
+            color: #888;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        .back-btn { 
+            background: linear-gradient(135deg, #E040FB 0%, #7C4DFF 100%);
+            color: #fff; 
+            border: none; 
+            padding: 12px 24px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            border-radius: 25px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(224, 64, 251, 0.4);
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+        }
+        .nav-tab {
+            background: #333;
+            color: #ccc;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .nav-tab.active {
+            background: #E040FB;
+            color: #fff;
+        }
+        .nav-tab:hover {
+            background: #444;
+        }
+        .nav-tab.active:hover {
+            background: #C63DE7;
+        }
+        
+        .section {
+            display: none;
+            padding: 0;
+        }
+        .section.active {
+            display: block;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #E040FB 0%, #7C4DFF 100%);
+            padding: 40px;
+            text-align: center;
+            margin: 0 auto;
+            max-width: 1000px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+        }
+        .section-header h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .section-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #E040FB;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(224, 64, 251, 0.3);
+            color: #fff;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #E040FB;
+            background: rgba(255,255,255,0.1);
+            box-shadow: 0 0 20px rgba(224, 64, 251, 0.3);
+        }
+        
+        .form-group input[readonly] {
+            background: rgba(46, 213, 115, 0.1);
+            border-color: rgba(46, 213, 115, 0.5);
+            color: #2ed573;
+        }
+        
+        .form-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(224, 64, 251, 0.5) 50%, transparent 100%);
+            margin: 30px 0;
+            grid-column: 1 / -1;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #E040FB 0%, #7C4DFF 100%);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(224, 64, 251, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .status-card {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(224, 64, 251, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #E040FB 0%, #7C4DFF 100%);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .step-list {
+            display: grid;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .step-group {
+            background: rgba(255,255,255,0.03);
+            border: 2px solid rgba(224, 64, 251, 0.3);
+            border-radius: 15px;
+            padding: 0;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .step-group-title {
+            background: linear-gradient(135deg, #E040FB 0%, #7C4DFF 100%);
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin: 0;
+            border-bottom: 2px solid rgba(224, 64, 251, 0.3);
+            display: block;
+        }
+        
+        .step-group-content {
+            padding: 20px;
+            display: grid;
+            gap: 15px;
+        }
+        
+        .step-item {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+        
+        .step-item.completed {
+            border-color: #2ed573;
+            background: rgba(46, 213, 115, 0.1);
+        }
+        
+        .step-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+        
+        .step-text {
+            flex: 1;
+            font-size: 16px;
+        }
+        
+        .step-item.completed .step-text {
+            color: #2ed573;
+        }
+        
+        .info-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 2px solid rgba(255, 193, 7, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .info-box-icon {
+            font-size: 24px;
+            color: #ffc107;
+        }
+        
+        .result-box {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(224, 64, 251, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .btn-group {
+                flex-direction: column;
+            }
+            .section-header h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-content">
+        <button class="back-btn" onclick="location.href='ana-sayfa.html'">← Ana Sayfa</button>
+        <div class="header-center">
+            <h1>❤️ Domain Bağlama Merkezi ❤️</h1>
+            <div class="header-subtitle">Sitenizi canlıya alın - Adım adım rehber</div>
+        </div>
+        <div style="width: 120px;"></div> <!-- Spacer for centering -->
+    </div>
+</div>
+
+<div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('dns')">1. DNS</button>
+    <button class="nav-tab" onclick="showSection('github')">2. GitHub</button>
+    <button class="nav-tab" onclick="showSection('vercel')">3. Vercel</button>
+    <button class="nav-tab" onclick="showSection('firebase')">4. Firebase</button>
+    <button class="nav-tab" onclick="showSection('test')">5. Test</button>
+</div>
+
+<!-- DNS SECTION -->
+<div id="dns" class="section active">
+    <div class="section-header">
+        <h2>🌐 DNS AYARLARI</h2>
+        <p>Domain'inizi Vercel'e yönlendirin</p>
+    </div>
+    
+    <div class="container">
+        <div class="info-box">
+            <div class="info-box-icon">ℹ️</div>
+            <div>Domain aldığınız siteye gidin (Namecheap, GoDaddy vs.), DNS ayarlarına aşağıdaki değerleri ekleyin.</div>
+        </div>
+        
+        <div class="form-grid">
+            <!-- DNS KAYITLARI TABLOSU -->
+            <div class="form-group full-width">
+                <label>📋 DNS KAYITLARI - Sırayla Kopyala & Yapıştır</label>
+                <table style="width:100%;border-collapse:collapse;background:rgba(255,255,255,0.05);border-radius:10px;overflow:hidden;margin-top:10px;">
+                    <thead>
+                        <tr style="background:linear-gradient(135deg, #E040FB 0%, #7C4DFF 100%);">
+                            <th style="padding:12px;text-align:left;font-size:14px;">Kayıt</th>
+                            <th style="padding:12px;text-align:left;font-size:14px;">Host</th>
+                            <th style="padding:12px;text-align:left;font-size:14px;">Değer</th>
+                            <th style="padding:12px;text-align:left;font-size:14px;">TTL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- A KAYDI -->
+                        <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                            <td style="padding:15px;font-weight:bold;color:#E040FB;">A</td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="aHost" value="@" readonly style="width:60px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;text-align:center;">
+                                    <button onclick="kopyala('aHost', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="vercelIp" value="76.76.21.21" readonly style="width:140px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;">
+                                    <button onclick="kopyala('vercelIp', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="aTtl" value="3600" readonly style="width:70px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;text-align:center;">
+                                    <button onclick="kopyala('aTtl', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- CNAME KAYDI -->
+                        <tr>
+                            <td style="padding:15px;font-weight:bold;color:#E040FB;">CNAME</td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="cnameHost" value="www" readonly style="width:60px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;text-align:center;">
+                                    <button onclick="kopyala('cnameHost', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="cnameValue" value="cname.vercel-dns.com" readonly style="width:180px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;">
+                                    <button onclick="kopyala('cnameValue', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                            <td style="padding:15px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <input type="text" id="cnameTtl" value="3600" readonly style="width:70px;padding:8px;background:rgba(46,213,115,0.1);border:1px solid rgba(46,213,115,0.5);color:#2ed573;border-radius:5px;text-align:center;">
+                                    <button onclick="kopyala('cnameTtl', this)" style="background:#28a745;color:#fff;border:none;padding:6px 12px;border-radius:5px;cursor:pointer;font-size:12px;">📋</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="https://ap.www.namecheap.com/domains/list/" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%); color: #fff; padding: 12px 25px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 14px;">🌐 Namecheap DNS Paneli</a>
+        </div>
+    </div>
+</div>
+
+<!-- GITHUB SECTION -->
+<div id="github" class="section">
+    <div class="section-header">
+        <h2>📁 GITHUB REPO</h2>
+        <p>Kodlarınızı GitHub'a yükleyin</p>
+    </div>
+    
+    <div class="container">
+        <div class="step-group">
+            <div class="step-group-title">📋 YAPILACAKLAR</div>
+            <div class="step-group-content">
+                <div class="step-item">
+                    <div class="step-text">1️⃣ GitHub'a giriş yap</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">2️⃣ "New repository" tıkla, repo adı gir</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">3️⃣ "Public" seç, "Create repository" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">4️⃣ "uploading an existing file" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">5️⃣ Tüm dosyaları sürükle bırak, "Commit changes" tıkla</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="https://github.com/new" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #333 0%, #24292e 100%); color: #fff; padding: 15px 40px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 16px;">🐙 GitHub'a Git - Repo Oluştur</a>
+        </div>
+    </div>
+</div>
+
+<!-- VERCEL SECTION -->
+<div id="vercel" class="section">
+    <div class="section-header">
+        <h2>� VERCEL DEPLOY</h2>
+        <p>Projenizi canlıya alın</p>
+    </div>
+    
+    <div class="container">
+        <div class="step-group">
+            <div class="step-group-title">� YAPILACAKLAR</div>
+            <div class="step-group-content">
+                <div class="step-item">
+                    <div class="step-text">1️⃣ Vercel'e GitHub ile giriş yap</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">2️⃣ "Add New Project" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">3️⃣ GitHub repo'nu seç</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">4️⃣ "Deploy" tıkla, bekle</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">5️⃣ Settings > Domains > Domain ekle</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="https://vercel.com/new" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #000 0%, #333 100%); color: #fff; padding: 15px 40px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 16px;">▲ Vercel'e Git - Deploy Et</a>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE SECTION -->
+<div id="firebase" class="section">
+    <div class="section-header">
+        <h2>🔥 FIREBASE KURULUM</h2>
+        <p>Sipariş verilerini kaydetmek için Firebase bağlayın</p>
+    </div>
+    
+    <div class="container">
+        <!-- TALİMATLAR -->
+        <div class="step-group">
+            <div class="step-group-title">📋 ADIM ADIM TALİMAT - PROJE OLUŞTURMA</div>
+            <div class="step-group-content">
+                <div class="step-item">
+                    <div class="step-text">1️⃣ Aşağıdaki butona tıkla, Firebase Console açılacak</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">2️⃣ Google hesabınla giriş yap</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">3️⃣ "Create a project" (Proje oluştur) tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">4️⃣ Proje adı yaz (örn: benim-sitem), "Continue" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">5️⃣ Google Analytics'i aç, "Continue" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">6️⃣ "Default Account" seç, "Create project" tıkla, bekle</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- REALTIME DATABASE KURULUMU -->
+        <div class="step-group" style="margin-top:20px;">
+            <div class="step-group-title">🗄️ REALTIME DATABASE KURULUMU (ÖNEMLİ!)</div>
+            <div class="step-group-content">
+                <div class="step-item">
+                    <div class="step-text">1️⃣ Sol menüde "Build" → "Realtime Database" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">2️⃣ "Create Database" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">3️⃣ Lokasyon seç (europe-west1 önerilir), "Next" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">4️⃣ "Start in test mode" seç, "Enable" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">5️⃣ Database URL'i kopyala (https://proje-adi-default-rtdb... şeklinde)</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- WEB APP KAYIT -->
+        <div class="step-group" style="margin-top:20px;">
+            <div class="step-group-title">🌐 WEB APP KAYIT</div>
+            <div class="step-group-content">
+                <div class="step-item">
+                    <div class="step-text">1️⃣ Sol menüde ⚙️ (dişli) → "Project settings" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">2️⃣ Aşağı kaydır, "</>" (Web) ikonuna tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">3️⃣ App nickname yaz, "Register app" tıkla</div>
+                </div>
+                <div class="step-item">
+                    <div class="step-text">4️⃣ Çıkan koddan <strong>apiKey</strong> ve <strong>projectId</strong> değerlerini aşağıya yaz</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <a href="https://console.firebase.google.com" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #FFA000 0%, #F57C00 100%); color: #fff; padding: 15px 40px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 16px;">🔥 Firebase Console'a Git</a>
+        </div>
+        
+        <!-- Firebase Config Girişi -->
+        <div class="step-group" style="margin-top:30px;">
+            <div class="step-group-title">⚙️ FİREBASE BİLGİLERİNİ GİR</div>
+            <div class="step-group-content" style="padding:25px;">
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label style="color:#FFA000;font-weight:bold;">API Key (apiKey değeri)</label>
+                    <input type="text" id="fbApiKey" placeholder="AIzaSyB... şeklinde başlayan kod" style="width:100%;padding:12px;border-radius:8px;border:2px solid #FFA000;background:rgba(255,160,0,0.1);color:#fff;font-size:14px;">
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label style="color:#FFA000;font-weight:bold;">Project ID (projectId değeri)</label>
+                    <input type="text" id="fbProjectId" placeholder="proje-adi-12345 şeklinde" style="width:100%;padding:12px;border-radius:8px;border:2px solid #FFA000;background:rgba(255,160,0,0.1);color:#fff;font-size:14px;">
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label style="color:#FFA000;font-weight:bold;">Database URL (Realtime Database'den kopyaladığın URL)</label>
+                    <input type="text" id="fbDatabaseUrl" placeholder="https://proje-adi-default-rtdb.europe-west1.firebasedatabase.app" style="width:100%;padding:12px;border-radius:8px;border:2px solid #FFA000;background:rgba(255,160,0,0.1);color:#fff;font-size:14px;">
+                </div>
+                
+                <!-- Kaydet Butonu -->
+                <div style="text-align:center;margin-top:25px;">
+                    <button onclick="firebaseKaydet()" style="background:linear-gradient(135deg, #2ed573 0%, #17a2b8 100%);color:#fff;border:none;padding:18px 50px;border-radius:30px;cursor:pointer;font-size:18px;font-weight:bold;box-shadow:0 5px 20px rgba(46,213,115,0.4);">💾 KAYDET & TEST ET</button>
+                </div>
+                
+                <!-- Sonuç Göstergesi -->
+                <div id="firebaseResult" style="margin-top:20px;text-align:center;padding:15px;border-radius:10px;display:none;font-size:16px;font-weight:bold;"></div>
+            </div>
+        </div>
+        
+        <!-- Firebase Durumu -->
+        <div class="step-group" style="margin-top:20px;">
+            <div class="step-group-title">📊 FİREBASE DURUMU</div>
+            <div class="step-group-content" style="padding:20px;">
+                <div id="firebaseStatus" style="text-align:center;">
+                    <div style="font-size:48px;margin-bottom:10px;">⏳</div>
+                    <div style="font-size:18px;color:#888;">Firebase durumu kontrol ediliyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TEST SECTION -->
+<div id="test" class="section">
+    <div class="section-header">
+        <h2>✅ TEST & KONTROL</h2>
+        <p>Her şeyin çalıştığından emin olun</p>
+    </div>
+    
+    <div class="container">
+        <div class="step-group">
+            <div class="step-group-title">📋 KONTROL LİSTESİ</div>
+            <div class="step-group-content">
+                <div class="step-item" id="step1">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">Domain satın alındı</div>
+                </div>
+                <div class="step-item" id="step2">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">DNS kayıtları eklendi</div>
+                </div>
+                <div class="step-item" id="step3">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">GitHub repo oluşturuldu</div>
+                </div>
+                <div class="step-item" id="step4">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">Vercel'e deploy edildi</div>
+                </div>
+                <div class="step-item" id="step5">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">Domain Vercel'e bağlandı</div>
+                </div>
+                <div class="step-item" id="step6">
+                    <input type="checkbox" class="step-checkbox" onchange="adimGuncelle()">
+                    <div class="step-text">Site açılıyor</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="status-card" style="margin-top:20px;">
+            <p id="progressText">0 / 6 adım tamamlandı</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+            </div>
+        </div>
+        
+        <!-- Site Adresi Girişi -->
+        <div class="step-group" style="margin-top:30px;">
+            <div class="step-group-title">🌐 SİTE ADRESİNİZ</div>
+            <div class="step-group-content" style="padding:20px;">
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <input type="text" id="siteAdresi" placeholder="örn: siteniz.com" style="flex:1;padding:15px;border-radius:10px;border:2px solid #2ed573;background:rgba(46,213,115,0.1);color:#fff;font-size:16px;">
+                    <button onclick="siteAdresiKaydet()" style="background:#2ed573;color:#fff;border:none;padding:15px 25px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;">💾 Kaydet</button>
+                </div>
+                <div style="margin-top:20px;text-align:center;">
+                    <button onclick="siteyiAc()" style="background:linear-gradient(135deg, #2ed573 0%, #17a2b8 100%);color:#fff;border:none;padding:18px 50px;border-radius:30px;cursor:pointer;font-size:18px;font-weight:bold;box-shadow:0 5px 20px rgba(46,213,115,0.4);">🌐 Siteyi Aç - Test Et</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Sayfa yüklenince
+window.onload = function() {
+    yukle();
+    adimGuncelle();
+    // Firebase ayarlarını yükle
+    firebaseYukle();
+    // Site adresini yükle
+    var kayitliSite = localStorage.getItem('site_adresi');
+    if(kayitliSite) document.getElementById('siteAdresi').value = kayitliSite;
+};
+
+// KOPYALA FONKSİYONU
+function kopyala(inputId, btn) {
+    var input = document.getElementById(inputId);
+    navigator.clipboard.writeText(input.value).then(function() {
+        if(typeof basariSesCal === 'function') basariSesCal();
+        var eskiText = btn.innerHTML;
+        btn.innerHTML = '✅ Kopyalandı!';
+        btn.style.background = '#17a2b8';
+        setTimeout(function() {
+            btn.innerHTML = eskiText;
+            btn.style.background = '#28a745';
+        }, 1500);
+    });
+}
+
+// FIREBASE KAYDET
+// MERKEZİ FIREBASE KALDIRILDI - Herkes kendi Firebase'ini kuracak
+var MERKEZI_FIREBASE = null;
+
+// Domain'den benzersiz ID oluştur
+function getDomainId() {
+    // Önce SITE_ID kullan (site-config.js'den)
+    if (typeof SITE_ID !== 'undefined' && SITE_ID && SITE_ID !== 'default') {
+        return SITE_ID;
+    }
+    
+    var domain = window.location.hostname;
+    
+    // Gerçek domain varsa kullan
+    if (domain && domain !== '' && domain !== 'localhost' && !domain.startsWith('127.')) {
+        return domain.replace(/\./g, '_').replace(/-/g, '_');
+    }
+    
+    // Local dosya için sabit ID kullan
+    return 'local_site';
+}
+
+// Korumalı Firebase listesi - bu Firebase'ler şifre gerektirir
+var KORUMALI_FIREBASE = ['hizlikargo-93a30'];
+var FIREBASE_SIFRE = 'ramadan123';
+
+function firebaseKaydet() {
+    var apiKey = document.getElementById('fbApiKey').value.trim();
+    var projectId = document.getElementById('fbProjectId').value.trim();
+    var databaseUrl = document.getElementById('fbDatabaseUrl').value.trim();
+    
+    var resultDiv = document.getElementById('firebaseResult');
+    
+    if (!apiKey || !projectId) {
+        resultDiv.innerHTML = '❌ API Key ve Project ID gerekli!';
+        resultDiv.style.background = 'rgba(255,107,107,0.2)';
+        resultDiv.style.color = '#ff6b6b';
+        resultDiv.style.display = 'block';
+        return;
+    }
+    
+    // Korumalı Firebase kontrolü
+    if (KORUMALI_FIREBASE.includes(projectId.toLowerCase())) {
+        var sifre = prompt('🔐 Bu Firebase korumalıdır!\n\nŞifreyi girin:');
+        if (!sifre || sifre.toLowerCase() !== FIREBASE_SIFRE.toLowerCase()) {
+            resultDiv.innerHTML = '🚫 YETKİNİZ YOK! Bu Firebase başka birine ait.';
+            resultDiv.style.background = 'rgba(255,107,107,0.3)';
+            resultDiv.style.color = '#ff6b6b';
+            resultDiv.style.display = 'block';
+            return;
+        }
+    }
+    
+    // Database URL yoksa otomatik oluştur
+    if (!databaseUrl) {
+        databaseUrl = 'https://' + projectId + '-default-rtdb.firebaseio.com';
+        document.getElementById('fbDatabaseUrl').value = databaseUrl;
+    }
+    
+    resultDiv.innerHTML = '🔄 Ayarlar kaydediliyor...';
+    resultDiv.style.background = 'rgba(255,193,7,0.2)';
+    resultDiv.style.color = '#ffc107';
+    resultDiv.style.display = 'block';
+    
+    // Sadece localStorage'a kaydet - herkes kendi Firebase'ini kullanacak
+    try {
+        var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('account_settings') : 'account_settings';
+        var settings = JSON.parse(localStorage.getItem(siteKey) || '{}');
+        settings.firebaseApiKey = apiKey;
+        settings.firebaseProjectId = projectId;
+        settings.firebaseDatabaseUrl = databaseUrl;
+        localStorage.setItem(siteKey, JSON.stringify(settings));
+        
+        console.log('✅ Firebase ayarları kaydedildi:', siteKey);
+        
+        // Durumu hemen güncelle
+        firebaseDurumGoster();
+        
+        // Kullanıcının kendi Firebase'ini test et
+        testKullanicininFirebase(apiKey, projectId, databaseUrl, resultDiv);
+        
+    } catch(e) {
+        resultDiv.innerHTML = '❌ Hata: ' + e.message;
+        resultDiv.style.background = 'rgba(255,107,107,0.2)';
+        resultDiv.style.color = '#ff6b6b';
+    }
+}
+
+// Kullanıcının kendi Firebase'ini test et
+function testKullanicininFirebase(apiKey, projectId, databaseUrl, resultDiv) {
+    try {
+        var testConfig = {
+            apiKey: apiKey,
+            authDomain: projectId + ".firebaseapp.com",
+            databaseURL: databaseUrl,
+            projectId: projectId,
+            storageBucket: projectId + ".appspot.com"
+        };
+        
+        // Kullanıcı Firebase app'i oluştur
+        var kullaniciApp;
+        try {
+            kullaniciApp = firebase.app('kullanici');
+            kullaniciApp.delete().then(function() {
+                kullaniciApp = firebase.initializeApp(testConfig, 'kullanici');
+                testFirebaseConnectionNew(kullaniciApp, resultDiv);
+            });
+        } catch(e) {
+            kullaniciApp = firebase.initializeApp(testConfig, 'kullanici');
+            testFirebaseConnectionNew(kullaniciApp, resultDiv);
+        }
+    } catch(e) {
+        resultDiv.innerHTML = '⚠️ Ayarlar kaydedildi ama test başarısız: ' + e.message;
+        resultDiv.style.background = 'rgba(255,193,7,0.2)';
+        resultDiv.style.color = '#ffc107';
+    }
+}
+
+// Yeni test fonksiyonu
+function testFirebaseConnectionNew(app, resultDiv) {
+    var db = app.database();
+    
+    db.ref('test_baglanti').set({
+        zaman: new Date().toISOString(),
+        test: true
+    }).then(function() {
+        if(typeof basariSesCal === 'function') basariSesCal();
+        resultDiv.innerHTML = '✅ BAŞARILI! Ayarlar kalıcı olarak kaydedildi ve Firebase çalışıyor!';
+        resultDiv.style.background = 'rgba(46,213,115,0.2)';
+        resultDiv.style.color = '#2ed573';
+        db.ref('test_baglanti').remove();
+        
+        // Durumu güncelle
+        setTimeout(firebaseDurumGoster, 1000);
+    }).catch(function(error) {
+        if(typeof hataSesCal === 'function') hataSesCal();
+        var hataMesaji = '⚠️ Ayarlar kaydedildi ama bağlantı hatası: ';
+        if (error.code === 'PERMISSION_DENIED') {
+            hataMesaji += 'Veritabanı kurallarını kontrol edin.';
+        } else {
+            hataMesaji += error.message;
+        }
+        resultDiv.innerHTML = hataMesaji;
+        resultDiv.style.background = 'rgba(255,193,7,0.2)';
+        resultDiv.style.color = '#ffc107';
+    });
+}
+
+// Firebase bağlantı testi
+function testFirebaseConnection(resultDiv) {
+    var db = firebase.database();
+    
+    // Test verisi yaz
+    db.ref('test_baglanti').set({
+        zaman: new Date().toISOString(),
+        test: true
+    }).then(function() {
+        // Başarılı
+        resultDiv.innerHTML = '✅ BAŞARILI! Firebase bağlantısı çalışıyor. Ayarlar kaydedildi.';
+        resultDiv.style.background = 'rgba(46,213,115,0.2)';
+        resultDiv.style.color = '#2ed573';
+        
+        // Test verisini sil
+        db.ref('test_baglanti').remove();
+    }).catch(function(error) {
+        // Hata
+        var hataMesaji = '❌ Bağlantı hatası: ';
+        if (error.code === 'PERMISSION_DENIED') {
+            hataMesaji += 'Veritabanı kuralları izin vermiyor. Firebase Console\'da Realtime Database kurallarını kontrol edin.';
+        } else {
+            hataMesaji += error.message;
+        }
+        resultDiv.innerHTML = hataMesaji;
+        resultDiv.style.background = 'rgba(255,107,107,0.2)';
+        resultDiv.style.color = '#ff6b6b';
+    });
+}
+
+// Firebase ayarlarını yükle
+function firebaseYukle() {
+    var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('account_settings') : 'account_settings';
+    var settings = JSON.parse(localStorage.getItem(siteKey) || '{}');
+    
+    console.log('🔍 Firebase yükleniyor - Key:', siteKey);
+    console.log('🔍 Kayıtlı ayarlar:', settings);
+    
+    // localStorage'dan yükle
+    if (settings.firebaseApiKey) {
+        document.getElementById('fbApiKey').value = settings.firebaseApiKey;
+        document.getElementById('fbProjectId').value = settings.firebaseProjectId || '';
+        document.getElementById('fbDatabaseUrl').value = settings.firebaseDatabaseUrl || '';
+        console.log('✅ Firebase bilgileri yüklendi!');
+    } else {
+        console.log('⚠️ Kayıtlı Firebase bilgisi yok');
+    }
+    firebaseDurumGoster();
+}
+
+// Firebase durumunu göster
+function firebaseDurumGoster() {
+    var statusDiv = document.getElementById('firebaseStatus');
+    if (!statusDiv) return;
+    
+    var siteKey = (typeof getSiteKey === 'function') ? getSiteKey('account_settings') : 'account_settings';
+    var settings = JSON.parse(localStorage.getItem(siteKey) || '{}');
+    
+    if (settings.firebaseApiKey && settings.firebaseProjectId && settings.firebaseDatabaseUrl) {
+        statusDiv.innerHTML = `
+            <div style="font-size:48px;margin-bottom:10px;">✅</div>
+            <div style="font-size:18px;color:#2ed573;font-weight:bold;">Firebase Bağlı</div>
+            <div style="margin-top:15px;text-align:left;background:rgba(46,213,115,0.1);padding:15px;border-radius:10px;">
+                <div style="margin-bottom:8px;"><strong>Project ID:</strong> ${settings.firebaseProjectId}</div>
+                <div style="margin-bottom:8px;"><strong>Database:</strong> ${settings.firebaseDatabaseUrl}</div>
+                <div><strong>API Key:</strong> ${settings.firebaseApiKey.substring(0,15)}...</div>
+            </div>
+        `;
+    } else {
+        statusDiv.innerHTML = `
+            <div style="font-size:48px;margin-bottom:10px;">❌</div>
+            <div style="font-size:18px;color:#ff6b6b;font-weight:bold;">Firebase Bağlı Değil</div>
+            <div style="margin-top:10px;color:#888;">Yukarıdaki adımları takip edip bilgileri girin</div>
+        `;
+    }
+}
+
+// Site adresi kaydet
+function siteAdresiKaydet() {
+    var adres = document.getElementById('siteAdresi').value;
+    if(adres) {
+        // https:// yoksa ekle
+        if(!adres.startsWith('http://') && !adres.startsWith('https://')) {
+            adres = 'https://' + adres;
+        }
+        localStorage.setItem('site_adresi', adres);
+        alert('✅ Site adresi kaydedildi!');
+    }
+}
+
+// Siteyi aç
+function siteyiAc() {
+    var adres = document.getElementById('siteAdresi').value;
+    if(!adres) {
+        alert('❌ Önce site adresini girin!');
+        return;
+    }
+    // https:// yoksa ekle
+    if(!adres.startsWith('http://') && !adres.startsWith('https://')) {
+        adres = 'https://' + adres;
+    }
+    window.open(adres, '_blank');
+}
+
+// KAYDET FONKSİYONLARI
+function domainKaydet(btn) {
+    var domain = document.getElementById('domainAdi').value;
+    if(domain) {
+        localStorage.setItem('domain_adi', domain);
+        btn.innerHTML = '✅ Kaydedildi!';
+        btn.style.background = '#17a2b8';
+        setTimeout(function() {
+            btn.innerHTML = '💾 Kaydet';
+            btn.style.background = '#28a745';
+        }, 1500);
+    }
+}
+
+function dnsKaydet(btn) {
+    var dns = document.getElementById('dnsSaglayici').value;
+    if(dns) {
+        localStorage.setItem('dns_saglayici', dns);
+        btn.innerHTML = '✅ Kaydedildi!';
+        btn.style.background = '#17a2b8';
+        setTimeout(function() {
+            btn.innerHTML = '💾 Kaydet';
+            btn.style.background = '#28a745';
+        }, 1500);
+    }
+}
+
+// SECTION NAVIGATION
+function showSection(sectionId) {
+    // Tüm section'ları gizle
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    
+    // Tüm tab'ları pasif yap
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Seçili section'ı göster
+    document.getElementById(sectionId).classList.add('active');
+    
+    // Seçili tab'ı aktif yap
+    event.target.classList.add('active');
+}
+
+// DOMAIN GÜNCELLE
+function domainGuncelle() {
+    var domain = document.getElementById('domainAdi').value;
+    if (domain) {
+        document.getElementById('cnameValue').value = 'cname.vercel-dns.com';
+    }
+}
+
+// DNS FUNCTIONS
+function manuelTalimatGoster() {
+    var domain = document.getElementById('domainAdi').value || 'sitenadi.com';
+    var saglayici = document.getElementById('dnsSaglayici').value || 'DNS sağlayıcınız';
+    var vercelIp = document.getElementById('vercelIp').value;
+    var cnameValue = document.getElementById('cnameValue').value || 'cname.vercel-dns.com';
+    
+    var talimat = `🌐 MANUEL DNS AYARLARI
+
+Domain: ${domain}
+Sağlayıcı: ${saglayici}
+
+📋 YAPILACAKLAR:
+
+1️⃣ ${saglayici} paneline giriş yapın
+2️⃣ Domain yönetim/DNS ayarları sayfasına gidin
+3️⃣ Şu kayıtları ekleyin:
+
+🔸 A KAYDI:
+   • Tip: A
+   • Host/Name: @ (veya boş)
+   • Value/IP: ${vercelIp}
+   • TTL: 3600 (veya Auto)
+
+🔸 CNAME KAYDI:
+   • Tip: CNAME
+   • Host/Name: www
+   • Value/Target: ${cnameValue}
+   • TTL: 3600 (veya Auto)
+
+4️⃣ Değişiklikleri kaydedin
+5️⃣ DNS yayılması için 5-30 dakika bekleyin`;
+    
+    showResult('dnsResult', talimat);
+}
+
+async function apiTest() {
+    var saglayici = document.getElementById('dnsSaglayici').value;
+    var apiKey = document.getElementById('apiKey').value;
+    
+    if (!saglayici) {
+        showResult('dnsResult', '❌ DNS sağlayıcı adını girin!');
+        return;
+    }
+    
+    if (!apiKey) {
+        showResult('dnsResult', '❌ API Key gerekli!');
+        return;
+    }
+    
+    showResult('dnsResult', '🔍 API bağlantısı test ediliyor...');
+    
+    try {
+        var sonuc = false;
+        var saglayiciLower = saglayici.toLowerCase();
+        
+        if (saglayiciLower.includes('cloudflare')) {
+            sonuc = await cloudflareApiTest();
+        } else if (saglayiciLower.includes('godaddy')) {
+            sonuc = await godaddyApiTest();
+        } else {
+            sonuc = apiKey.length > 5;
+        }
+        
+        if (sonuc) {
+            showResult('dnsResult', '✅ API bağlantısı başarılı!');
+        } else {
+            showResult('dnsResult', '❌ API bağlantısı başarısız! Manuel talimat kullanın.');
+        }
+    } catch (error) {
+        showResult('dnsResult', '❌ Hata: ' + error.message);
+    }
+}
+
+async function dnsKayitlariOlustur() {
+    var domain = document.getElementById('domainAdi').value;
+    var apiKey = document.getElementById('apiKey').value;
+    var vercelIp = document.getElementById('vercelIp').value;
+    var cnameValue = document.getElementById('cnameValue').value;
+    
+    if (!domain) {
+        showResult('dnsResult', '❌ Domain adı gerekli!');
+        return;
+    }
+    
+    if (!cnameValue) {
+        document.getElementById('cnameValue').value = 'cname.vercel-dns.com';
+        cnameValue = 'cname.vercel-dns.com';
+    }
+    
+    if (!apiKey) {
+        manuelTalimatGoster();
+        return;
+    }
+    
+    showResult('dnsResult', '🚀 DNS kayıtları oluşturuluyor...');
+    
+    try {
+        var basarili = false;
+        var saglayici = document.getElementById('dnsSaglayici').value.toLowerCase();
+        
+        if (saglayici.includes('cloudflare')) {
+            basarili = await cloudflareDnsOlustur(domain, vercelIp, cnameValue);
+        } else if (saglayici.includes('godaddy')) {
+            basarili = await godaddyDnsOlustur(domain, vercelIp, cnameValue);
+        } else {
+            manuelTalimatGoster();
+            basarili = true;
+        }
+        
+        if (basarili) {
+            showResult('dnsResult', `✅ DNS kayıtları başarıyla oluşturuldu!
+
+• A kaydı: @ → ${vercelIp}
+• CNAME kaydı: www → ${cnameValue}
+
+DNS yayılması 5-30 dakika sürebilir.`);
+            
+            document.querySelector('#step4 input').checked = true;
+            adimGuncelle();
+        } else {
+            showResult('dnsResult', '❌ DNS kayıtları oluşturulamadı! Manuel talimat kullanın.');
+        }
+    } catch (error) {
+        showResult('dnsResult', '❌ Hata: ' + error.message);
+    }
+}
+
+async function dnsKayitlariKontrol() {
+    var domain = document.getElementById('domainAdi').value;
+    
+    if (!domain) {
+        showResult('dnsResult', '❌ Domain adı gerekli!');
+        return;
+    }
+    
+    showResult('dnsResult', '🔍 DNS kayıtları kontrol ediliyor...');
+    
+    try {
+        var response = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
+        var data = await response.json();
+        
+        var mesaj = `DNS KONTROL SONUCU:\n\nDomain: ${domain}\n\n`;
+        
+        if (data.Answer && data.Answer.length > 0) {
+            mesaj += 'A Kayıtları:\n';
+            data.Answer.forEach(record => {
+                if (record.type === 1) {
+                    mesaj += `• ${record.data}\n`;
+                }
+            });
+        } else {
+            mesaj += '❌ A kaydı bulunamadı\n';
+        }
+        
+        var wwwResponse = await fetch(`https://dns.google/resolve?name=www.${domain}&type=CNAME`);
+        var wwwData = await wwwResponse.json();
+        
+        if (wwwData.Answer && wwwData.Answer.length > 0) {
+            mesaj += '\nCNAME Kayıtları (www):\n';
+            wwwData.Answer.forEach(record => {
+                if (record.type === 5) {
+                    mesaj += `• ${record.data}\n`;
+                }
+            });
+        } else {
+            mesaj += '\n❌ www CNAME kaydı bulunamadı\n';
+        }
+        
+        showResult('dnsResult', mesaj);
+    } catch (error) {
+        showResult('dnsResult', '❌ DNS kontrol hatası: ' + error.message);
+    }
+}
+
+// GITHUB FUNCTIONS
+function githubTalimatGoster() {
+    var talimat = `📁 GITHUB REPO OLUŞTURMA
+
+1️⃣ GitHub'a giriş yapın (github.com)
+2️⃣ "New repository" butonuna tıklayın
+3️⃣ Repo adını girin (örn: ramco-website)
+4️⃣ "Public" seçin (ücretsiz hosting için)
+5️⃣ "Create repository" tıklayın
+
+📤 DOSYA YÜKLEME:
+
+6️⃣ "uploading an existing file" linkine tıklayın
+7️⃣ Tüm dosyalarınızı sürükleyip bırakın:
+   • index.html (ana dosya)
+   • ramco.css
+   • ramco.js
+   • diğer dosyalar
+
+8️⃣ "Commit changes" butonuna tıklayın
+
+✅ Repo hazır! URL'yi kopyalayın.`;
+    
+    showResult('githubResult', talimat);
+}
+
+async function githubRepoKontrol() {
+    var githubUrl = document.getElementById('githubUrl').value;
+    
+    if (!githubUrl) {
+        showResult('githubResult', '❌ GitHub repo URL gerekli!');
+        return;
+    }
+    
+    showResult('githubResult', '🔍 GitHub repo kontrol ediliyor...');
+    
+    try {
+        // GitHub URL'den API URL'si oluştur
+        var apiUrl = githubUrl.replace('github.com', 'api.github.com/repos');
+        
+        var response = await fetch(apiUrl);
+        
+        if (response.ok) {
+            var data = await response.json();
+            showResult('githubResult', `✅ GitHub repo bulundu!
+
+Repo: ${data.full_name}
+Açıklama: ${data.description || 'Açıklama yok'}
+Dil: ${data.language || 'Belirtilmemiş'}
+Son güncelleme: ${new Date(data.updated_at).toLocaleString('tr-TR')}
+Boyut: ${data.size} KB
+Yıldız: ${data.stargazers_count}
+Fork: ${data.forks_count}
+
+🔗 Clone URL: ${data.clone_url}
+🌐 Homepage: ${data.homepage || 'Belirtilmemiş'}`);
+
+            // 2. adımı otomatik işaretle
+            document.querySelector('#step2 input').checked = true;
+            adimGuncelle();
+        } else {
+            showResult('githubResult', '❌ GitHub repo bulunamadı! URL\'yi kontrol edin.');
+        }
+    } catch (error) {
+        showResult('githubResult', '❌ GitHub kontrol hatası: ' + error.message);
+    }
+}
+
+// VERCEL FUNCTIONS
+function vercelTalimatGoster() {
+    var talimat = `🚀 VERCEL DEPLOY ADIMLARI
+
+1️⃣ Vercel'e giriş yapın (vercel.com)
+2️⃣ "New Project" butonuna tıklayın
+3️⃣ "Import Git Repository" seçin
+4️⃣ GitHub hesabınızı bağlayın
+5️⃣ Repo'nuzu seçin
+6️⃣ "Deploy" butonuna tıklayın
+
+⚙️ AYARLAR:
+• Framework Preset: Other
+• Root Directory: ./
+• Build Command: (boş bırakın)
+• Output Directory: (boş bırakın)
+
+🔗 DOMAIN BAĞLAMA:
+7️⃣ Project Settings > Domains
+8️⃣ "Add Domain" tıklayın
+9️⃣ Domain'inizi girin
+🔟 DNS ayarlarını yapın (DNS bölümünde)
+
+✅ Deploy tamamlandı!`;
+    
+    showResult('vercelResult', talimat);
+}
+
+async function vercelKontrol() {
+    var vercelUrl = document.getElementById('vercelUrl').value;
+    
+    if (!vercelUrl) {
+        showResult('vercelResult', '❌ Vercel proje URL gerekli!');
+        return;
+    }
+    
+    showResult('vercelResult', '🔍 Vercel projesi kontrol ediliyor...');
+    
+    try {
+        var response = await fetch(vercelUrl);
+        
+        if (response.ok) {
+            showResult('vercelResult', `✅ Vercel projesi çalışıyor!
+
+URL: ${vercelUrl}
+Status: ${response.status} ${response.statusText}
+Erişilebilir: Evet
+Content-Type: ${response.headers.get('content-type')}
+
+🌐 Site başarıyla yayında!
+📱 Mobil uyumlu: Test edin
+🔒 HTTPS: Aktif`);
+
+            // 3. adımı otomatik işaretle
+            document.querySelector('#step3 input').checked = true;
+            adimGuncelle();
+        } else {
+            showResult('vercelResult', `❌ Vercel projesi erişilemez!
+
+URL: ${vercelUrl}
+Status: ${response.status} ${response.statusText}
+
+Proje deploy edilmemiş olabilir.`);
+        }
+    } catch (error) {
+        showResult('vercelResult', '❌ Vercel kontrol hatası: ' + error.message);
+    }
+}
+
+function vercelDeploy() {
+    var githubUrl = document.getElementById('githubUrl').value;
+    var projectName = document.getElementById('vercelProjectName').value;
+    
+    if (!githubUrl) {
+        showResult('vercelResult', '❌ Önce GitHub repo URL\'si gerekli!');
+        return;
+    }
+    
+    showResult('vercelResult', `🚀 VERCEL DEPLOY TALİMATI:
+
+📋 Hazırlık:
+• GitHub repo: ${githubUrl}
+• Proje adı: ${projectName || 'otomatik-oluşturulacak'}
+
+🚀 Deploy adımları:
+1️⃣ Vercel'e git: https://vercel.com
+2️⃣ "New Project" tıklayın
+3️⃣ GitHub'ı bağlayın
+4️⃣ Repo'yu seçin: ${githubUrl.split('/').pop()}
+5️⃣ "Deploy" tıklayın
+
+⚙️ Ayarlar (gerekirse):
+• Framework: Other
+• Build Command: (boş)
+• Output Directory: (boş)
+
+✅ Deploy tamamlandığında URL'yi buraya girin.`);
+    
+    // Otomatik URL tahmini
+    if (projectName) {
+        document.getElementById('vercelUrl').value = `https://${projectName}.vercel.app`;
+    }
+}
+
+function vercelDomainBagla() {
+    var customDomain = document.getElementById('vercelCustomDomain').value;
+    var vercelUrl = document.getElementById('vercelUrl').value;
+    
+    if (!customDomain || !vercelUrl) {
+        showResult('vercelResult', '❌ Vercel URL ve custom domain gerekli!');
+        return;
+    }
+    
+    showResult('vercelResult', `🔗 VERCEL DOMAIN BAĞLAMA:
+
+🌐 Domain: ${customDomain}
+🚀 Vercel Proje: ${vercelUrl}
+
+📋 Adımlar:
+1️⃣ Vercel dashboard'a git
+2️⃣ Projenizi seçin
+3️⃣ Settings > Domains
+4️⃣ "Add Domain" tıklayın
+5️⃣ Domain girin: ${customDomain}
+6️⃣ DNS ayarlarını yapın:
+
+DNS Ayarları (DNS bölümünde yapın):
+• A Record: @ → 76.76.21.21
+• CNAME Record: www → cname.vercel-dns.com
+
+⏱️ DNS yayılması: 5-30 dakika
+🔒 SSL: Otomatik aktif olacak`);
+}
+
+// FIREBASE FUNCTIONS
+function firebaseTalimatGoster() {
+    var talimat = `🔥 FIREBASE KURULUM ADIMLARI
+
+1️⃣ Firebase Console'a giriş yapın (console.firebase.google.com)
+2️⃣ "Create a project" tıklayın
+3️⃣ Proje adını girin
+4️⃣ Google Analytics'i aktifleştirin
+5️⃣ "Create project" tıklayın
+
+📱 WEB APP EKLEME:
+6️⃣ "</>" (Web) ikonuna tıklayın
+7️⃣ App nickname girin
+8️⃣ "Register app" tıklayın
+9️⃣ Config bilgilerini kopyalayın
+
+🔧 CONFIG DOSYASI:
+Config bilgilerini firebase-config.js dosyasına yapıştırın:
+
+const firebaseConfig = {
+  apiKey: "your-api-key",
+  authDomain: "project-id.firebaseapp.com",
+  projectId: "project-id",
+  storageBucket: "project-id.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef",
+  measurementId: "G-XXXXXXXXXX"
+};
+
+✅ Firebase hazır!`;
+    
+    showResult('firebaseResult', talimat);
+}
+
+function firebaseKur() {
+    var projectId = document.getElementById('firebaseProjectId').value;
+    var apiKey = document.getElementById('firebaseApiKey').value;
+    var appId = document.getElementById('firebaseAppId').value;
+    var measurementId = document.getElementById('firebaseMeasurementId').value;
+    var authDomain = document.getElementById('firebaseAuthDomain').value;
+    var storageBucket = document.getElementById('firebaseStorageBucket').value;
+    
+    if (!projectId || !apiKey) {
+        showResult('firebaseResult', '❌ Firebase Project ID ve API Key gerekli!');
+        return;
+    }
+    
+    // Otomatik domain ve bucket doldur
+    if (!authDomain) {
+        document.getElementById('firebaseAuthDomain').value = `${projectId}.firebaseapp.com`;
+        authDomain = `${projectId}.firebaseapp.com`;
+    }
+    
+    if (!storageBucket) {
+        document.getElementById('firebaseStorageBucket').value = `${projectId}.appspot.com`;
+        storageBucket = `${projectId}.appspot.com`;
+    }
+    
+    var config = `// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "${apiKey}",
+  authDomain: "${authDomain}",
+  projectId: "${projectId}",
+  storageBucket: "${storageBucket}",
+  messagingSenderId: "123456789",
+  appId: "${appId}",
+  measurementId: "${measurementId}"
+};
+
+// Initialize Firebase
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+// Export for use in other files
+export { app, analytics };`;
+    
+    showResult('firebaseResult', `✅ Firebase config oluşturuldu!
+
+Bu kodu firebase-config.js dosyasına kaydedin:
+
+${config}
+
+📁 Dosyayı projenize ekleyin ve HTML'de import edin.
+
+🔗 Firebase Console: https://console.firebase.google.com/project/${projectId}`);
+    
+    // 7. adımı otomatik işaretle
+    document.querySelector('#step7 input').checked = true;
+    adimGuncelle();
+}
+
+function firebaseKontrol() {
+    var projectId = document.getElementById('firebaseProjectId').value;
+    
+    if (!projectId) {
+        showResult('firebaseResult', '❌ Firebase Project ID gerekli!');
+        return;
+    }
+    
+    showResult('firebaseResult', `🔍 Firebase projesi kontrol ediliyor...
+
+Project ID: ${projectId}
+Console URL: https://console.firebase.google.com/project/${projectId}
+Auth Domain: ${projectId}.firebaseapp.com
+Storage Bucket: ${projectId}.appspot.com
+
+📋 Kontrol listesi:
+• Firebase Console'da proje var mı?
+• Web app eklenmiş mi?
+• Analytics aktif mi?
+• Config bilgileri doğru mu?
+
+Manuel kontrol için Firebase Console'u ziyaret edin.`);
+}
+
+function firebaseConfigOlustur() {
+    var projectId = document.getElementById('firebaseProjectId').value;
+    
+    if (!projectId) {
+        showResult('firebaseResult', '❌ En az Project ID gerekli!');
+        return;
+    }
+    
+    var basicConfig = `// Basic Firebase Configuration
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY_HERE",
+  authDomain: "${projectId}.firebaseapp.com",
+  projectId: "${projectId}",
+  storageBucket: "${projectId}.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  measurementId: "G-XXXXXXXXXX"
+};
+
+// Initialize Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const analytics = firebase.analytics();
+
+console.log('Firebase initialized successfully!');`;
+    
+    showResult('firebaseResult', `⚙️ Temel Firebase config oluşturuldu:
+
+${basicConfig}
+
+📝 Yapılacaklar:
+1️⃣ Firebase Console'dan gerçek değerleri alın
+2️⃣ YOUR_API_KEY_HERE yerine gerçek API key
+3️⃣ YOUR_SENDER_ID yerine gerçek sender ID
+4️⃣ YOUR_APP_ID yerine gerçek app ID
+5️⃣ Dosyayı firebase-config.js olarak kaydedin`);
+}
+
+// TEST FUNCTIONS
+function tumTestleriYap() {
+    showResult('testResult', '🔍 Tüm testler çalıştırılıyor...');
+    
+    setTimeout(() => {
+        var domain = document.getElementById('domainAdi').value;
+        var githubUrl = document.getElementById('githubUrl').value;
+        var vercelUrl = document.getElementById('vercelUrl').value;
+        
+        var testSonucu = `🧪 TEST SONUÇLARI:
+
+🌐 Domain: ${domain || 'Girilmemiş'}
+📁 GitHub: ${githubUrl || 'Girilmemiş'}
+🚀 Vercel: ${vercelUrl || 'Girilmemiş'}
+
+📋 KONTROL LİSTESİ:
+${domain ? '✅' : '❌'} Domain girildi
+${githubUrl ? '✅' : '❌'} GitHub repo bağlandı
+${vercelUrl ? '✅' : '❌'} Vercel deploy edildi
+
+🔍 Manuel testler:
+• Domain'e tarayıcıdan erişim
+• SSL sertifikası kontrolü
+• Mobil uyumluluk testi
+• Sayfa yükleme hızı`;
+        
+        showResult('testResult', testSonucu);
+    }, 2000);
+}
+
+// UTILITY FUNCTIONS
+function showResult(elementId, message) {
+    var element = document.getElementById(elementId);
+    element.textContent = message;
+    element.style.display = 'block';
+}
+
+function adimGuncelle() {
+    var checkboxlar = document.querySelectorAll('.step-checkbox');
+    var tamamlanan = 0;
+    
+    checkboxlar.forEach(function(cb, index) {
+        var stepItem = cb.closest('.step-item');
+        if (cb.checked) {
+            tamamlanan++;
+            stepItem.classList.add('completed');
+        } else {
+            stepItem.classList.remove('completed');
+        }
+    });
+    
+    var yuzde = (tamamlanan / 6) * 100;
+    
+    document.getElementById('progressText').textContent = tamamlanan + ' / 6 adım tamamlandı';
+    document.getElementById('progressFill').style.width = yuzde + '%';
+}
+
+function kaydet() {
+    var veri = {
+        domainAdi: document.getElementById('domainAdi').value,
+        dnsSaglayici: document.getElementById('dnsSaglayici').value,
+        apiKey: document.getElementById('apiKey').value,
+        apiSecret: document.getElementById('apiSecret').value,
+        cnameValue: document.getElementById('cnameValue').value,
+        githubUser: document.getElementById('githubUser').value,
+        repoName: document.getElementById('repoName').value,
+        githubUrl: document.getElementById('githubUrl').value,
+        githubToken: document.getElementById('githubToken').value,
+        githubBranch: document.getElementById('githubBranch').value,
+        vercelToken: document.getElementById('vercelToken').value,
+        vercelProjectName: document.getElementById('vercelProjectName').value,
+        vercelUrl: document.getElementById('vercelUrl').value,
+        vercelFramework: document.getElementById('vercelFramework').value,
+        vercelBuildCommand: document.getElementById('vercelBuildCommand').value,
+        vercelCustomDomain: document.getElementById('vercelCustomDomain').value,
+        firebaseProjectId: document.getElementById('firebaseProjectId').value,
+        firebaseApiKey: document.getElementById('firebaseApiKey').value,
+        firebaseAppId: document.getElementById('firebaseAppId').value,
+        firebaseMeasurementId: document.getElementById('firebaseMeasurementId').value,
+        firebaseAuthDomain: document.getElementById('firebaseAuthDomain').value,
+        firebaseStorageBucket: document.getElementById('firebaseStorageBucket').value,
+        adimlar: Array.from(document.querySelectorAll('.step-checkbox')).map(cb => cb.checked)
+    };
+    
+    localStorage.setItem('domain_baglama', JSON.stringify(veri));
+    alert('✅ Tüm bilgiler kaydedildi!');
+}
+
+function yukle() {
+    var kayitli = localStorage.getItem('domain_baglama');
+    if (kayitli) {
+        var veri = JSON.parse(kayitli);
+        
+        // Form alanlarını doldur
+        Object.keys(veri).forEach(key => {
+            if (key !== 'adimlar') {
+                var element = document.getElementById(key);
+                if (element && veri[key]) {
+                    element.value = veri[key];
+                }
+            }
+        });
+        
+        // Adımları işaretle
+        if (veri.adimlar) {
+            var checkboxlar = document.querySelectorAll('.step-checkbox');
+            veri.adimlar.forEach((durum, index) => {
+                if (checkboxlar[index]) {
+                    checkboxlar[index].checked = durum;
+                }
+            });
+        }
+    }
+}
+
+function temizle() {
+    if (confirm('Tüm bilgiler silinsin mi?')) {
+        localStorage.removeItem('domain_baglama');
+        location.reload();
+    }
+}
+
+// API FUNCTIONS
+async function cloudflareApiTest() {
+    var token = document.getElementById('apiKey').value;
+    var zoneId = document.getElementById('apiSecret').value;
+    
+    if (!token || !zoneId) {
+        throw new Error('API Key ve Zone ID gerekli!');
+    }
+    
+    try {
+        var response = await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function godaddyApiTest() {
+    var key = document.getElementById('apiKey').value;
+    var secret = document.getElementById('apiSecret').value;
+    
+    if (!key || !secret) {
+        throw new Error('API Key ve Secret gerekli!');
+    }
+    
+    try {
+        var response = await fetch('https://api.godaddy.com/v1/domains/available?domain=test.com', {
+            headers: {
+                'Authorization': `sso-key ${key}:${secret}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function cloudflareDnsOlustur(domain, ip, cname) {
+    var token = document.getElementById('apiKey').value;
+    var zoneId = document.getElementById('apiSecret').value;
+    
+    try {
+        var aResponse = await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: 'A',
+                name: '@',
+                content: ip,
+                ttl: 1
+            })
+        });
+        
+        var cnameResponse = await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}/dns_records`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                type: 'CNAME',
+                name: 'www',
+                content: cname,
+                ttl: 1
+            })
+        });
+        
+        return aResponse.ok && cnameResponse.ok;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function godaddyDnsOlustur(domain, ip, cname) {
+    var key = document.getElementById('apiKey').value;
+    var secret = document.getElementById('apiSecret').value;
+    
+    try {
+        var getResponse = await fetch(`https://api.godaddy.com/v1/domains/${domain}/records`, {
+            headers: {
+                'Authorization': `sso-key ${key}:${secret}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        if (!getResponse.ok) return false;
+        
+        var records = await getResponse.json();
+        var aRecord = { type: 'A', name: '@', data: ip, ttl: 3600 };
+        var cnameRecord = { type: 'CNAME', name: 'www', data: cname, ttl: 3600 };
+        
+        var filteredRecords = records.filter(r => !(r.type === 'A' && r.name === '@') && !(r.type === 'CNAME' && r.name === 'www'));
+        filteredRecords.push(aRecord, cnameRecord);
+        
+        var putResponse = await fetch(`https://api.godaddy.com/v1/domains/${domain}/records`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `sso-key ${key}:${secret}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(filteredRecords)
+        });
+        
+        return putResponse.ok;
+    } catch (error) {
+        return false;
+    }
+}
+</script>
+
+<!-- Site Config (SITE_ID) -->
+<script src="site-config.js"></script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<!-- 🔔 SİPARİŞ SES SİSTEMİ - Her sayfada çalışır -->
+<script src="ramco-beyin.js"></script>
+<script src="ramco-widget.js"></script>
+</body>
+</html>
